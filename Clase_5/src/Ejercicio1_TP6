@@ -1,0 +1,34 @@
+Ejercicio 1 Trabajo practico N°6
+Modelar una relación de herencia entre Vehículo, Auto y Moto.
+Dibujar el diagrama UML correspondiente, indicando la relación de generalización entre las clases.
+
+
+@startuml
+
+title 1. Herencia, Vehículo, Auto, Moto
+
+class Vehiculo{
+    -marca: String
+    -modelo: String
+    --
+    + arrancar(): void
+}
+
+class Moto{
+    -tieneCasco: boolean
+    --
+    +hacerWilly(): void
+
+}
+
+
+class Auto{
+    -numeroDePuertas: int
+    --
+    +abrirPuertas(): void
+}
+
+'La flecha con triangulo blanco indica generalización
+Vehiculo <|-- Auto: es un
+Vehiculo <|-- Moto: es un
+@enduml
