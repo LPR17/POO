@@ -1,0 +1,26 @@
+'Ejercicio 4 Trabajo practico N°6
+'Modelar una relación de dependencia entre Aplicación y ServicioWeb.
+'Dibujar el diagrama UML correspondiente, representando que la Aplicacion utiliza el ServicioWeb de forma opcional o temporal.
+
+@startuml
+
+title 4. Relación de Dependencia Aplicacion y Servicio Web
+
+class Aplicacion{
+    -nombre: String
+    -version: char
+    --
+    +consumirServicio(): void
+}
+
+
+class ServicioWeb{
+    -url: String
+    -protocolo: String
+    --
+
+}
+
+Aplicacion ..> ServicioWeb: Agrega
+
+@enduml

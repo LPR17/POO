@@ -1,0 +1,32 @@
+'Ejercicio 5 Trabajo practico N°6
+'Modelar una relación de dependencia entre CuentaBancaria, Cuenta Corriente y CajaDeAhorro.
+'Representar cómo las clases especializadas heredan atributos y comportamientos de una clase base genérica.
+
+@startuml
+
+title 5. Relación de Herencia CuentaBancaria, Cuenta Corriente y CajaDeAhorro.
+
+class CuentaBancaria{
+    -nombre: String
+    -version: char
+    --
+    +consumirServicio(): void
+}
+
+
+class CuentaCorriente{
+    -url: String
+    -protocolo: String
+    --
+}
+
+class CajaDeAhorro.{
+    -url: String
+    -protocolo: String
+    --
+}
+
+CuentaBancaria <|-- CuentaCorriente: Agrega
+CuentaBancaria <|-- CajaDeAhorro:
+
+@enduml
