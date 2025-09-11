@@ -5,7 +5,7 @@ Dibujar el diagrama UML correspondiente, indicando la relación de generalizaci�
 
 @startuml
 
-title 1. Herencia, Vehículo, Auto, Moto
+title 1. Relación de Herencia, Vehículo, Auto, Moto
 
 class Vehiculo{
     -marca: String

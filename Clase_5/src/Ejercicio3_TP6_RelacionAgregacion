@@ -1,0 +1,31 @@
+'Ejercicio 3 Trabajo practico N°6
+'Modelar una relación de composición entre Equipo y Jugador.
+'Dibujar el diagrama UML correspondiente, teniendo en cuenta que los Jugadores pueden existir independientemente del Equipo.
+
+
+@startuml
+
+title 3. Relación de Agregación Equipo y Jugador
+
+class Equipo{
+    -nombre: String
+    -ciudad: String
+    -titulos: int
+    --
+    +descender: boolean
+    +ascender: boolean
+}
+
+
+class Jugador{
+    -nombre: String
+    -numeroCamiseta: int
+    -posicion: String
+    -nacionalidad: String
+    --
+    +lesionarse: boolean
+}
+
+Equipo o-- "*" Jugador: Agrega
+
+@enduml

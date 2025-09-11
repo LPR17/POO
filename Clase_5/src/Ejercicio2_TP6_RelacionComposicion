@@ -1,0 +1,72 @@
+'Ejercicio 3 Trabajo practico N°6
+'Modelar una relación de composición entre Computadora y Procesador.
+'Dibujar el diagrama UML correspondiente, indicando que el Procesador no existe sin la Computadora.
+
+'Es una relación fuerte
+
+@startuml
+
+title 2. Relación de composición entre Computadora y Procesador
+
+'Clase contenedora
+class Computadora{
+    -modeloComputadora: String
+    --
+    + realizarCalculo(int a, int b): int
+}
+
+'Clase Contenida
+class Procesador{
+    -marca: String
+    -cantidadNucleos: int
+    --
+    +procesarDatos(): void
+    +ejecutaInstruccion(): void
+
+}
+
+'Relaciones
+'El rombo negro , indica una composición fuerte (dependencia de existencia)
+Computadora *-- "1" Procesador: tiene un
+
+@enduml
+
+
+'Tambien puede ser una relación a varios
+
+@startuml
+
+title 2. Relación entre Computadora y Procesador
+
+'Clase contenedora
+class Computadora2{
+    -modeloComputadora: String
+    --
+    + realizarCalculo(int a, int b): int
+}
+
+'Clase Contenida
+class Procesador2{
+    -marca: String
+    -cantidadNucleos: int
+    --
+    +procesarDatos(): void
+    +ejecutaInstruccion(): void
+
+}
+
+class Memoria{
+    -marca: String
+    -capacidad: int
+    --
+    +guardarInformacion(): void
+
+}
+
+
+'Relaciones
+'El rombo negro , indica una composición fuerte (dependencia de existencia)
+Computadora2 *-- "*" Procesador2: tiene un
+Computadora2 *-- "*" Memoria: tiene un
+
+@enduml
