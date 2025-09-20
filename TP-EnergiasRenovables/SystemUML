@@ -1,0 +1,9 @@
+@startuml
+
+'Ordena desde arriba hacia abajo
+top to bottom direction
+
+
+title Consultorio Odontologico
+
+@enduml
