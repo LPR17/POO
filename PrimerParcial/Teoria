@@ -1,0 +1,3 @@
+-Polimorfismo es cuando un mismo método puede tener diferentes comportamientos dependiendo qué lo utilice. Por ejemplo si tenemos una clase abstracta Animal que posee un método hacerSonido() que imprime un string generico como "El animal hace un sonido", a su vez podemos tener otras subclases que heredan de la clase Animal como por ejemplo "Perro" o "Gato" donde llamamos al metodo hacerSonido() pero en estas clases imprime otros strings como por ejemplo "El perro hace guau guau"
+
+-Sobrecarga es cuando una clase tiene métodos con el mismo nombre pero con parámetros diferentes. Por ejemplo varios métodos "suma" pero que reciben distinta cantidad de parametros o de tipos de parametros (int o double)

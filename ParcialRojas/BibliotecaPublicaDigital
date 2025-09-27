@@ -1,0 +1,141 @@
+' ------------------- Configuración visual --------
+top to bottom direction
+skinparam roundcorner 20
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName "Arial"
+
+
+legend top
+  |= Símbolo |= Relación |= Descripción |
+  | <|-- | Herencia | Relación "es-un" |
+  | *--  | Composición | Parte-de (ciclo de vida dependiente) |
+  | o--  | Agregación  | Tiene-un (ciclo de vida independiente) |
+  | -->  | Asociación  | Vinculación estructural |
+  | ..>  | Dependencia | Uso puntual (no estructural) |
+endlegend
+
+'--------------------------------------------
+title Biblioteca Pública Digital
+
+'--------------------- Enums ---------------------
+enum FormatoEbook {
+  	PDF
+	EPUB
+	CBR
+	CBZ
+	MOBI
+	AWZ
+}
+
+'---------------------- Main ----------------------
+class Biblioteca{
+    -nombre: String
+    -ubicacion: String
+    -fechaApertura: String
+
+}
+
+'---------------------- Materiales ----------------------
+abstract class Material{
+    #codigoDeIdentificacion: String
+    #titulo: String
+    #fechaPublicacion: String
+    #genero: String
+    #idioma: String
+
+}
+
+
+abstract class MaterialDigital{
+    -pesoDelArchivoEnMB: int
+}
+
+abstract class MaterialFisico{
+    -ubicacionFisica: String
+    -cantidadDeCopias: int
+}
+
+class LibroImpreso{
+    -tipoTapa: String
+}
+
+class Revista{
+    -tipoDeRevista: String
+}
+
+class Ebook{
+    -formatoDeArchivo: FormatosEbook
+}
+
+class AudioLibro{
+    -duracionEnMinutos: int
+}
+
+'---------------------- Usuarios ----------------------
+abstract class Usuario{
+    #nombre: String
+    #mail: String
+}
+
+class Lector{
+    -numeroDeSocio: int
+    +reservarMaterial():
+    +prestamoMaterial():
+
+}
+
+class PersonalBibliotecario{
+    -legajo: int
+    -rol: String
+    +registrarMaterial(): void
+}
+
+'---------------------- Herramientas Usuarios ----------------------
+interface HerramientasLector{
+    +reservarMaterial():
+    +prestamoMaterial():
+}
+
+interface HerramientasPersonal{
+    +
+    +
+}
+
+class PrestamoDigital{
+    +registrarDescarga(nombreUsuario: Lector):void
+    +registrarFechaYHoraDeDescarga(FechaYHora: String): void
+}
+
+class PrestamoFisico{
+    +registrarFechaInicio(FechaYHora: String): void
+	+registrarFechaDevolucion(FechaYHora: String):void
+	+estadoDePrestamo(devuelto: boolean):void
+}
+
+'---------------------- Relaciones ----------------------
+Biblioteca *-- "*" Material: tiene varios
+Biblioteca "1" 0-- "0..*"  PersonalBibliotecario: emplea
+
+'Relaciones de Herencia
+Material <|-- MaterialFisico: es un
+Material <|-- MaterialDigital:es un
+
+MaterialFisico <|-- LibroImpreso: es un
+MaterialFisico <|-- Revista:es un
+MaterialDigital <|-- Ebook: es un
+MaterialDigital <|-- AudioLibro: es un
+
+Usuario <|-- Lector: es un
+Usuario <|-- PersonalBibliotecario: es un
+
+Lector ..> HerramientasLector : «utiliza»
+
+HerramientasLector <|.. PrestamoDigital :extend
+HerramientasLector <|.. PrestamoFisico :extend
+
+PrestamoDigital ..> MaterialDigital: : «usa»
+PrestamoFisico ..> MaterialFisico: : «usa»
+
+
+PersonalBibliotecario ..> HerramientasPersonal : «utiliza»
