@@ -1,0 +1,221 @@
+@startuml
+
+top to bottom direction
+skinparam roundcorner 12
+skinparam defaultFontName "Arial"
+
+
+title **Biblioteca Pública**
+
+
+'========== ENUMS ==========
+enum Periodicidad{
+    SEMANAL
+    MENSUAL
+    QUINCENAL
+    DIARIO
+    TRIMESTRAL
+    SEMESTRAL
+    ANUAL
+}
+
+enum FormatoArchivo{
+    PDF
+    EPUB
+    CBR
+    CBZ
+    MOBI
+    AZW
+}
+
+enum RolesBibliotecario{
+    ATENCION_PUBLICO
+    GESTION_TECNICA
+    ADMINISTRACION
+    SEGURIDAD
+}
+
+enum EstadoCopia{
+    DISPONIBLE
+    PRESTADO
+    ROBADO
+    RETRASADO
+}
+
+enum EstadoReserva{
+    PENDIENTE
+    CANCELADA
+    MODIFICADA
+}
+'========== Entidad Raíz ==========
+class Biblioteca{
+    - nombre: String
+    - responsable: Bibliotecario
+    - direccion: String
+
+    +registrarUsuario(tipoUsuario: Usuario): void
+    +altaNuevoMaterial(material: Material): void
+    +buscarPorTitulo(titulo: String): String
+}
+
+'========== Nucleo: Material y subtipos ==========
+abstract class Material{
+    - codigo: String
+    - titulo: String
+    - fechaPublicacion: Date
+    - autores: List<Autores>
+
+    + esReservable(): boolean
+    +getInfo():String
+}
+
+abstract class MaterialFisico{
+    -estado:???
+    -ubicacionEstanteria: String
+    +getUbicacion():String
+}
+
+abstract class MaterialDigital{
+    - tamanioMB: double
+    + getTamanio(): double
+}
+
+class Revista{
+    - issn: String
+    - periodicidad: Periodicidad
+    - numeroEdicion: int
+
+    +getPeriodicidad(): Periodicidad
+}
+
+class LibroImpreso{
+    - isbn: String
+    - tipoTapa: String
+    + getIsbn(): String
+}
+
+class Ebook{
+    - formato: FormatoArchivo
+    + getFormato(): FormatoArchivo
+}
+
+class Audiolibro{
+    - duracionMinutos: int
+    - narrador: String
+    + getNarrador(): String
+}
+
+class Autor{
+    - nombre: String
+    - apellido: String
+    - nacionalidad: String
+    - epoca: String
+
+    +getNombreCompleto(): String
+    +getNacionalidad(): String
+
+}
+
+'==========Usuarios y personal ==========
+abstract class Usuario{
+    - id: Long
+    - nombreCompleto: String
+    - email: String
+
+    +getI(): Long
+    +getNombre(): String
+}
+
+class Lector{
+    -numeroDeSocio: String
+
+    +solicitarPrestamo(material: Material):void
+    +reservarMaterial(material: Material): void
+    +accederMaterialDigital(recursoDigital: MaterialDigital): void
+
+}
+
+class Bibliotecario{
+    - legajo: String
+    - rol: RolesBibliotecario
+    + registrarPrestamo(material: Material): void
+    + registrarDevolucion(material: Material):void
+    + gestionarReserva(material: Material): void
+}
+
+'========== Transacciones y reglas de negocio ==========
+
+class Prestamo{
+    - id: String
+    - fechaInicio: Date
+    - fechaDevolucion: Date
+    - estadoSalida: EstadoCopia
+
+    +esVencido(): boolean
+    calcularMulta(): double
+}
+
+class Reserva{
+    - id: String
+    - fecha: Date
+    - estado: EstadoReserva
+
+    +activarReserva(): void
+    +cancelarReserva(): void
+}
+
+class AccesoDigital{
+    - id: String
+    - fechaHora: Date
+    - tipoAcceso: String
+    -ip: String
+
+    +registrar():void
+}
+
+
+'========== Relaciones ==========
+'--Herencias--
+Material <|-- MaterialFisico: hereda
+Material <|-- MaterialDigital: hereda
+
+MaterialFisico <|-- Revista: es un
+MaterialFisico <|-- LibroImpreso: es un
+
+MaterialDigital <|-- Ebook: es un
+MaterialDigital<|-- Audiolibro: es un
+
+Usuario <|-- Lector: es un
+Usuario <|-- Bibliotecario: es un
+
+
+'Relaciones transaccionales + cardinalidades
+Prestamo "0..*" --> "1" Lector
+Prestamo "0..*" --> "1" Bibliotecario: procesadoPor
+
+AccesoDigital "1" --> "1" Lector
+Reserva "1" --> "1" Material
+Reserva "1" --> "1" Lector
+
+'Si por ejemplo fueron personas de existencia
+'Dado que, el usuario pueden
+Biblioteca "1" *-- "1..*" Material
+Biblioteca "1" *-- "1..*" Usuario
+Biblioteca "1" o-- "0..*" Prestamo
+Biblioteca "1" o-- "0..*" Reserva
+Biblioteca "1" o-- "0..*" AccesoDigital
+
+
+Material "1" o.. "0..*" Autor: autores
+Material "1" o-- "1..*" Editorial: edita
+
+'===Notas de Aclaración ===
+note bottom of Biblioteca
+    **Biblioteca** Actua como agregador raiz
+    para orquestar colecciones y operaciones de alto nivel sin acoplamiento
+    de las entidades entre si de fomra innecesaria
+end note
+
+
+
+@enduml

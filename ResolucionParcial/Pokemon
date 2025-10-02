@@ -1,0 +1,54 @@
+@startuml
+abstract class Pokemon{
+    #nombre: String
+    #nivel: int
+    #vida: int
+    +{abstract} atacar(objetivo: Pokemon): void
+    +recibirDanio(int): void
+    + getNombre(): String
+    + getVida(): int
+    + getNivel(): int
+}
+
+class PokemonFuego{
+    -intensidadFuego: int
+    +atacar(objetivo: Pokemon)
+}
+
+class PokemonAgua{
+    -presionAgua: int
+    +atacar(objetivo: Pokemon)
+}
+
+
+class Entrenador{
+    -nombre: String
+    -pokemones: List<Pokemon>
+    +ordenarAtaque(pokemon: Pokemon):void
+}
+
+'---------------------- Relaciones ----------------------
+'---- Agregacion ----
+Entrenador "1" o-- "0..*" Pokemon: posee
+
+note right of Entrenador
+  La relación que posee Entrenador y Pokemon es una relación de Agregación
+  Esto debido a que un Entrenador puede o No tener un Pokemon
+  Pueden existir independientemente
+end note
+
+note right of PokemonFuego
+    atacar() implementa "Lanzallamas"
+end note
+
+note right of PokemonAgua
+    atacar() implementa "Hidrobomba"
+end note
+
+'---- Herencia ----
+Pokemon <|-- PokemonFuego: es un
+Pokemon <|-- PokemonAgua: es un
+
+Pokemon "1" -- "1" Pokemon : ataca a
+
+@enduml
