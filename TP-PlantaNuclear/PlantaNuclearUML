@@ -1,0 +1,97 @@
+@startuml
+
+top to bottom direction
+skinparam roundcorner 12
+skinparam defaultFontName "Arial"
+
+
+title **Planta Nuclear Sprongfield**
+
+'========== Entidad Raíz - Planta Nuclear ==========
+
+class main{
+
+}
+'========== Nucleo Equipo ==========
+
+abstract class Equipo{
+    -id: String
+    -nombreEquipo: String
+    -equipoEnServicio: boolean
+    +ponerEquipoEnServicio(): void
+    +ponerEquipoEnMantenimiento(): void
+    +setNombreEquipo(String nombreEquipo): void
+    +autodiagnosticoInicial(): void
+    +{abstract} descripcionTecnicaDeEquipo(): String
+    +getId(): String
+    +getNombreEquipo(): String
+    +estaEnServicio(): boolean
+}
+
+class ReactorPWR{
+    -nivelDePotencia: double
+    -reactorEncendido: boolean
+    +getNivelDePotenciaf(double nuevaPotencia): double
+    +setNivelDePotencia(): void
+ }
+
+class BombaAguaPrimaria{
+    -encendida: boolean
+    -caudalM3h: double
+    +setCaudalM3h(double nuevoCaudal): void
+ }
+
+class TurbinaDeVapor{
+    -encendida: boolean
+    -rpm: double
+ }
+
+ class Orquestador{
+    -sistemasControlables: List<Controlable>
+    -sensores: List<Sensor>
+    +registrarControlable(Controlable c): void
+    +registrarSensor(Sensor s): void
+    +encenderTodo(): void
+    +scram(): void
+    +mostrarLecturas(): void
+    +mostrarEstadoSensores():void
+ }
+
+ class SensorRadiacion{
+    -nombre: String
+ }
+
+ '========== Interfaces ==========
+
+ interface Controlable{
+    +encender(): void
+    +apagar(): void
+    +scram(): void
+    +estaEncendido(): boolean
+ }
+
+ interface Sensor{
+    +getNombre(): String
+    +leerValor(): double
+    +estadoSensor(): String
+ }
+
+ '========== Relaciones ==========
+'--Herencias--
+Equipo <|-- ReactorPWR: es un
+Equipo <|-- BombaAguaPrimaria: es un
+Equipo <|-- TurbinaDeVapor: es un
+
+Controlable ..> ReactorPWR: implementa
+Sensor ..> ReactorPWR: implementa
+
+Controlable ..> BombaAguaPrimaria: implementa
+Sensor ..> BombaAguaPrimaria: implementa
+
+Controlable ..> TurbinaDeVapor: implementa
+
+Sensor ..> SensorRadiacion: implementa
+
+
+
+@enduml
