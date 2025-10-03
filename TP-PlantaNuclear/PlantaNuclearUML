@@ -9,8 +9,14 @@ title **Planta Nuclear Sprongfield**
 
 '========== Entidad Raíz - Planta Nuclear ==========
 
-class main{
-
+class PlantaNuclear{
+    - id: String
+    - nombre: String
+    - ubicacion: String
+    - fechaPuestaEnMarcha: String
+    - Equipos: List<Equipo>
+    + iniciarOperacion(): void
+    + detenerOperacion(): void
 }
 '========== Nucleo Equipo ==========
 
@@ -77,6 +83,8 @@ class TurbinaDeVapor{
  }
 
  '========== Relaciones ==========
+
+PlantaNuclear *-- "1..*" Equipo : tiene uno o varias
 '--Herencias--
 Equipo <|-- ReactorPWR: es un
 Equipo <|-- BombaAguaPrimaria: es un
@@ -91,6 +99,9 @@ Sensor ..> BombaAguaPrimaria: implementa
 Controlable ..> TurbinaDeVapor: implementa
 
 Sensor ..> SensorRadiacion: implementa
+
+Orquestador --> Controlable: usa
+Orquestador --> Sensor: usa
 
 
 
