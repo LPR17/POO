@@ -49,11 +49,10 @@ public class MotorDeAvion {
 
     @Override
     public String toString(){
-        return "Motor {" +
-                "Marca = " + marca + " - " +
-                "Caballos de Fuerza (HP) = " + caballosDeFuerzaEnHP + " - " +
-                "Empuje en Libras = " + empujeEnLibras + " - " +
-                "Motor Encendido = " + motorEncendido +
+        return "\n\t\t\t{Marca = " + marca +
+                "\n\t\t\tCaballos de Fuerza (HP) = " + caballosDeFuerzaEnHP +
+                "\n\t\t\tEmpuje en Libras = " + empujeEnLibras +
+                "\n\t\t\tMotor Encendido = " + motorEncendido +
                 "}";
     }
 

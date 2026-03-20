@@ -64,15 +64,14 @@ public class Avion {
 
     @Override
     public String toString(){
-        return "Avion {" +
-                "Marca = '" + marca+"' - " +
-                "Modelo = '" + modelo + "' - " +
-                "Numero de Asientos = '" + numeroAsientos + "' - " +
-                "Sistema Entretenimiento = '" + sistemaEntretenimiento + "' - " +
-                "Motor = '" + motor + "' - " +
-                "Sistema de Control = '" + sistemaDeControl + "' - " +
-                "Cantidad de alas = '" + alas.length +
-                "}";
+        return "\tAvion:" +
+                "\n\t\t{Marca = '" + marca + "'" +
+                "\n\t\tModelo = '" + modelo + "'" +
+                "\n\t\tNumero de Asientos = '" + numeroAsientos + "'" +
+                "\n\t\tSistema Entretenimiento = '" + sistemaEntretenimiento + "'" +
+                "\n\t\tMotor = " + motor +
+                "\n\t\tSistema de Control = '" + sistemaDeControl + "'" +
+                "\n\t\tCantidad de alas = '" + alas.length + "' }";
 
     }
 }
