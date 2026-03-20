@@ -38,7 +38,26 @@ public class App {
         System.out.println("---Sistema Airbus---");
         System.out.println(sistemaAirbus);
 
-
         sistemaAirbus.cambiarDeModo(7);
+
+        System.out.println("\n====================\n");
+
+        //----------------- Motores ---------------
+        MotorDeAvion motorBoeing = new MotorDeAvion("Rolls Royce", 50000, 70000);
+        MotorDeAvion motorAirbus = new MotorDeAvion("GE Aviation",60000, 80000);
+
+        // Encender motor 1
+        motorBoeing.encenderMotor();
+
+        // Apagar motor 2 (sin encenderlo primero)
+        motorAirbus.apagarMotor();
+
+        System.out.println("---MotorBoeing---");
+        System.out.println(motorBoeing);
+
+        System.out.println();
+
+        System.out.println("---MotorAirbus---");
+        System.out.println(motorAirbus);
     }
 }

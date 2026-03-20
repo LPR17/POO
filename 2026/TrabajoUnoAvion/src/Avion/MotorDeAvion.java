@@ -14,11 +14,21 @@ public class MotorDeAvion {
     }
 
     public void encenderMotor(){
-        motorEncendido = true;
+        if (!motorEncendido){
+            motorEncendido = true;
+            System.out.println("Motor encendido");
+        } else {
+            System.out.println("El motor ya esta encendido");
+        }
     }
 
     public void apagarMotor(){
-        motorEncendido = false;
+        if (motorEncendido){
+            motorEncendido = false;
+            System.out.println("Motor Apagado");
+        } else {
+            System.out.println("El motor ya esta apagado");
+        }
     }
 
     public String getMarca(){
