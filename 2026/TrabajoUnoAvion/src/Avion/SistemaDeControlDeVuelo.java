@@ -7,7 +7,7 @@ public class SistemaDeControlDeVuelo {
     private String fabricante;
     private int numerosDeModos;
     private TipoDeSistema tipoDeSistema;
-    private int modoActuial;
+    private int modoActual;
 
 
     //Constructor
@@ -15,7 +15,7 @@ public class SistemaDeControlDeVuelo {
         this.fabricante = nombreFabricante;
         this.numerosDeModos = numerosDeModos;
         this.tipoDeSistema = tipoDeSistema;
-        this.modoActuial = 1;
+        this.modoActual = 1;
     }
 
     //Metodo para cambiar de modos
@@ -24,8 +24,8 @@ public class SistemaDeControlDeVuelo {
         //Si el nuevo modo es mayor o igual a 1 y Es menor o igual a la cantidad de modos
         if (nuevoModo >= 1 && nuevoModo <= numerosDeModos) {
             //Entonces este es el modo Actual;
-            this.modoActuial = nuevoModo;
-            System.out.println("Se cambio al modo: " + modoActuial);
+            this.modoActual = nuevoModo;
+            System.out.println("Se cambio al modo: " + modoActual);
 
         //Si no lo es
         } else {
@@ -42,11 +42,21 @@ public class SistemaDeControlDeVuelo {
 
     //Devolver el modo actual
     public int getModoActual(){
-        return modoActuial;
+        return modoActual;
     }
 
     //Devuelve el tipo de sistema del Avion
     public TipoDeSistema getTipoDeSistema(){
         return tipoDeSistema;
+    }
+
+    @Override
+    public String toString(){
+        return "Sistema de Control de Vuelo {" +
+                "Fabricante = '" + fabricante + "' - " +
+                "Numero Modos = '" + numerosDeModos + "' - " +
+                "Tipo de Sistema = '" + tipoDeSistema + "' - " +
+                "Modo De Vuelo Actual = '" + modoActual +
+                "' } ";
     }
 }

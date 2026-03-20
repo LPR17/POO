@@ -30,11 +30,15 @@ public class App {
 
         //Imprimir la Información de los sistemas
         System.out.println("---Sistema Boeing---");
-        System.out.println("Fabricante: " + sistemaBoeing.getFabricante());
-        System.out.println("Modo de Vuelo Actual: " + sistemaBoeing.getModoActual());
+        System.out.println(sistemaBoeing);
+
+        //Cambiar Modo
+        sistemaBoeing.cambiarDeModo(4);
 
         System.out.println("---Sistema Airbus---");
-        System.out.println("Fabricante: " +sistemaAirbus.getFabricante());
-        System.out.println("Modo de Velo Actual: " + sistemaAirbus.getModoActual());
+        System.out.println(sistemaAirbus);
+
+
+        sistemaAirbus.cambiarDeModo(7);
     }
 }
