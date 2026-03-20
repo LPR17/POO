@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ParadigmaOrientadoObjetos.iml" filepath="$PROJECT_DIR$/ParadigmaOrientadoObjetos.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TrabajoUnoAvion/TrabajoUnoAvion.iml" filepath="$PROJECT_DIR$/TrabajoUnoAvion/TrabajoUnoAvion.iml" />
+    </modules>
+  </component>
+</project>
