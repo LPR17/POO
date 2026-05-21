@@ -33,7 +33,7 @@ Emp <|-- Aco
 ' ============================
 ' CASOS DE USO
 ' ============================
-rectangle "Sistema de Festival - Venta" {
+rectangle "Sistema de Gestión de Festival de Cine" {
   usecase "Consultar cartelera" as UC13
   usecase "Comprar entrada" as UC14
   usecase "Validar disponibilidad\nde butaca" as UC15
