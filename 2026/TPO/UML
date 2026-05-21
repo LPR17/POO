@@ -107,6 +107,7 @@ abstract class Empleado {
   - sueldo: double
   - edicionAsignada: Edicion
   + {abstract} getRol(): String
+  + {abstract} mostrarInfo(): String
 }
 
 class Acomodador {
@@ -300,7 +301,7 @@ Seccion "1..*" o-- "1..*" Pelicula : agrupa >
 
 ' Asociaciones simples
 Pelicula "*" --> "1" Director : dirigida por >
-Pelicula "*" --> "1..*" Actor : protagonizada por >
+Pelicula "*" --> "0..*" Actor : protagonizada por >
 Funcion "*" --> "1" Pelicula : proyecta >
 Funcion "*" --> "1" Sala : se realiza en >
 Entrada "*" --> "1" Butaca : asigna >
