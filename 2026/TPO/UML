@@ -57,10 +57,9 @@ enum Categoria {
 }
 
 enum NivelSponsor {
-  PLATINO
-  ORO
-  PLATA
-  BRONCE
+  INVITA
+  AUSPICIA
+  COLABORA
 }
 
 ' ============================
