@@ -1,0 +1,59 @@
+@startuml CasosDeUso_Evaluacion
+
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam actor {
+  BackgroundColor #FEFEFE
+  BorderColor #2C3E50
+}
+skinparam usecase {
+  BackgroundColor #FFFBE6
+  BorderColor #2C3E50
+  ArrowColor #2C3E50
+}
+skinparam package {
+  BackgroundColor #F5F5F5
+  BorderColor #555555
+  FontStyle bold
+}
+
+left to right direction
+
+title Subsistema 3: Evaluación y Premios
+
+' ============================
+' ACTORES
+' ============================
+actor "MiembroJurado" as Mj
+actor "Organizador" as Org
+actor "Espectador" as Esp
+actor "Sponsor" as Sp
+
+' ============================
+' CASOS DE USO
+' ============================
+rectangle "Sistema de Festival - Evaluación" {
+  usecase "Consultar películas\na evaluar" as UC22
+  usecase "Evaluar película" as UC23
+  usecase "Calcular puntajes\npromedio" as UC25
+  usecase "Otorgar premios" as UC26
+  usecase "Entregar premio\nauspiciado" as UC27
+  usecase "Votar premio\ndel público" as UC28
+}
+
+' ============================
+' RELACIONES ACTOR - CASO DE USO
+' ============================
+Mj --> UC22
+Mj --> UC23
+Org --> UC26
+Sp --> UC27
+Esp --> UC28
+
+' ============================
+' INCLUDES / EXTENDS
+' ============================
+UC26 ..> UC25 : <<include>>
+UC27 ..> UC26 : <<extend>>
+
+@enduml
