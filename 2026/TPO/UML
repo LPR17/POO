@@ -71,7 +71,7 @@ abstract class Persona  {
   - apellido: String
   - dni: String
   + getNombreCompleto(): String
-  + mostrarInfo(): String
+  + {abstract} mostrarInfo(): String
 }
 
 class Director {
