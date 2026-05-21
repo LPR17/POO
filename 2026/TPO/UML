@@ -32,6 +32,8 @@ enum Genero {
   TERROR
   ANIMACION
   ACCION
+  MUSICAL
+  CORTOMETRAJE
 }
 
 enum EstadoButaca {
