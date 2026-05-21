@@ -1,0 +1,39 @@
+@startuml SecuenciaCompraEntrada
+
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2C3E50
+  LifeLineBorderColor #2C3E50
+  ParticipantBorderColor #2C3E50
+  ParticipantBackgroundColor #FFF5E6
+  ParticipantFontStyle bold
+  ActorBorderColor #2C3E50
+  ActorBackgroundColor #E8F4F8
+  ActorFontStyle bold
+}
+
+title Comprar Entrada
+
+actor "Espectador" as ESP
+participant "esp : Espectador" as E_OBJ
+participant "funcion : Funcion" as F
+participant "butaca : Butaca" as B
+participant "entrada : Entrada" as E
+
+ESP -> E_OBJ : comprarEntrada(funcion, butaca, tipo)
+
+E_OBJ -> F : venderEntrada(this, butaca, tipo)
+
+F -> B : estaDisponible()
+B --> F : true
+
+F -> B : reservar()
+
+create E
+F -> E : new Entrada(...)
+E --> F : entrada
+
+F --> E_OBJ : entrada
+E_OBJ --> ESP : entrada
+
+@enduml
