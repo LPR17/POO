@@ -71,7 +71,7 @@ abstract class Persona  {
   - apellido: String
   - dni: String
   + getNombreCompleto(): String
-  + {abstract} mostrarInfo(): String
+  + mostrarInfo(): String
 }
 
 class Director {
@@ -106,7 +106,7 @@ abstract class Empleado {
   - legajo: String
   - sueldo: double
   - edicionAsignada: Edicion
-  + {abstract} getRol(): String
+  + getRol(): String
 }
 
 class Acomodador {
