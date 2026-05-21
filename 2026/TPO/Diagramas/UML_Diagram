@@ -1,0 +1,324 @@
+@startuml SistemaFestivalCine
+
+' ============================
+' CONFIGURACIÓN VISUAL
+' ============================
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam nodesep 80
+skinparam ranksep 90
+skinparam packageStyle rectangle
+skinparam package {
+  BackgroundColor #F5F5F5
+  BorderColor #555555
+  FontStyle bold
+}
+skinparam class {
+  BackgroundColor #FEFEFE
+  BorderColor #2C3E50
+  ArrowColor #2C3E50
+}
+
+top to bottom direction
+
+' ============================
+' ENUMS
+' ============================
+enum Genero {
+  DRAMA
+  COMEDIA
+  DOCUMENTAL
+  TERROR
+  ANIMACION
+  ACCION
+  MUSICAL
+  CORTOMETRAJE
+}
+
+enum EstadoButaca {
+  LIBRE
+  OCUPADA
+  RESERVADA
+}
+
+enum Categoria {
+  MEJOR_PELICULA
+  MEJOR_DIRECTOR
+  MEJOR_ACTOR
+  MEJOR_ACTRIZ
+  MEJOR_ACTOR_REPARTO
+  MEJOR_ACTRIZ_REPARTO
+  MEJOR_GUION
+  MEJOR_BANDA_SONORA
+  MEJOR_DISENIO_DE_PRODUCCION
+  MEJOR_DOCUMENTAL
+  MEJOR_PELICULA_ANIMADA
+  PREMIO_DEL_PUBLICO
+}
+
+enum NivelSponsor {
+  INVITA
+  AUSPICIA
+  COLABORA
+}
+
+enum TipoEntrada {
+  QR
+  FISICA
+}
+
+' ============================
+' JERARQUÍA DE PERSONAS
+' ============================
+abstract class Persona  {
+  - nombre: String
+  - apellido: String
+  - dni: String
+  + getNombreCompleto(): String
+  + {abstract} mostrarInfo(): String
+}
+
+class Director {
+  - peliculasDirigidas: List<Pelicula>
+  + agregarPelicula(p: Pelicula): void
+  + mostrarInfo(): String
+}
+
+class Actor {
+  - peliculasActuadas: List<Pelicula>
+  + agregarPelicula(p: Pelicula): void
+  + mostrarInfo(): String
+}
+
+class MiembroJurado {
+  - evaluacionesRealizadas: List<Evaluacion>
+  + evaluar(p: Pelicula, puntaje: int, com: String): Evaluacion
+  + mostrarInfo(): String
+}
+
+class Espectador {
+  - email: String
+  - entradasCompradas: List<Entrada>
+  + comprarEntrada(f: Funcion, b: Butaca): Entrada
+  + mostrarInfo(): String
+}
+
+' ============================
+' JERARQUÍA DE EMPLEADOS (multinivel)
+' ============================
+abstract class Empleado {
+  - legajo: String
+  - sueldo: double
+  - edicionAsignada: Edicion
+  + {abstract} getRol(): String
+  + {abstract} mostrarInfo(): String
+}
+
+class Acomodador {
+  - sectorAsignado: String
+  - funcionesAsignadas: List<Funcion>
+  + ubicarEspectador(esp: Espectador, b: Butaca): void
+  + getRol(): String
+  + mostrarInfo(): String
+}
+
+class Organizador {
+  - areaResponsabilidad: String
+  + programarFuncion(p: Pelicula, s: Sala, fh: LocalDateTime): Funcion
+  + gestionarSeccion(sec: Seccion): void
+  + getRol(): String
+  + mostrarInfo(): String
+}
+
+Persona <|-- Director
+Persona <|-- Actor
+Persona <|-- MiembroJurado
+Persona <|-- Espectador
+Persona <|-- Empleado
+Empleado <|-- Acomodador
+Empleado <|-- Organizador
+
+' ============================
+' ESTRUCTURA DEL FESTIVAL
+' ============================
+class Edicion {
+  - numero: int
+  - anio: int
+  - ciudad: String
+  - venue: String
+  - nombreFestival: String
+  - fechaInicio: LocalDate
+  - fechaFin: LocalDate
+  - secciones: List<Seccion>
+  - funciones: List<Funcion>
+  - premios: List<Premio>
+  - empleados: List<Empleado>
+  - sponsors: List<Sponsor>
+  + agregarSeccion(s: Seccion): void
+  + programarFuncion(f: Funcion): void
+  + otorgarPremios(): void
+  + getOcupacionGeneral(): double
+}
+
+class Seccion {
+  - nombre: String
+  - descripcion: String
+  - peliculas: List<Pelicula>
+  + inscribirPelicula(p: Pelicula): void
+  + getPeliculaGanadora(): Pelicula
+  + rankingPorPuntaje(): List<Pelicula>
+}
+
+class Pelicula {
+  - titulo: String
+  - duracionMin: int
+  - anioProduccion: int
+  - genero: Genero
+  - sinopsis: String
+  - director: Director
+  - actores: List<Actor>
+  - evaluaciones: List<Evaluacion>
+  + agregarActor(a: Actor): void
+  + agregarEvaluacion(e: Evaluacion): void
+  + getPuntajePromedio(): double
+  + getCantidadEvaluaciones(): int
+}
+
+' ============================
+' SALAS Y FUNCIONES
+' ============================
+class Sala {
+  - nombre: String
+  - ubicacion: String
+  - capacidad: int
+  - butacas: List<Butaca>
+  + getButacasLibres(): List<Butaca>
+  + getOcupacion(): double
+}
+
+class Butaca {
+  - fila: String
+  - numero: int
+  - estado: EstadoButaca
+  + reservar(): void
+  + liberar(): void
+  + estaDisponible(): boolean
+}
+
+class Funcion {
+  - fechaHora: LocalDateTime
+  - precioEntrada: double
+  - pelicula: Pelicula
+  - sala: Sala
+  - entradas: List<Entrada>
+  + venderEntrada(esp: Espectador, b: Butaca, tipo: TipoEntrada): Entrada
+  + getButacasDisponibles(): List<Butaca>
+  + getPorcentajeOcupacion(): double
+}
+
+' ============================
+' JERARQUÍA DE ENTRADAS (polimorfismo)
+' ============================
+abstract class Entrada {
+  - codigo: String
+  - fechaCompra: LocalDateTime
+  - precio: double
+  - validada: boolean
+  - funcion: Funcion
+  - butaca: Butaca
+  - espectador: Espectador
+  + cancelar(): void
+  + getInfo(): String
+  + {abstract} generarComprobante(): String
+  + {abstract} validar(): boolean
+}
+
+class EntradaQR {
+  - codigoQR: String
+  - urlValidacion: String
+  - fechaEscaneo: LocalDateTime
+  + generarComprobante(): String
+  + validar(): boolean
+}
+
+class EntradaFisica {
+  - numeroSerie: String
+  - colorTicket: String
+  - validadorPuerta: String
+  + generarComprobante(): String
+  + validar(): boolean
+}
+
+Entrada <|-- EntradaQR
+Entrada <|-- EntradaFisica
+
+' ============================
+' EVALUACIONES Y PREMIOS
+' ============================
+class Evaluacion {
+  - puntaje: int
+  - comentario: String
+  - fecha: LocalDate
+  - jurado: MiembroJurado
+  - pelicula: Pelicula
+  + esValida(): boolean
+}
+
+class Premio {
+  - categoria: Categoria
+  - peliculaGanadora: Pelicula
+  - destinatario: Persona
+  - seccion: Seccion
+  - edicion: Edicion
+  + mostrarPremio(): String
+}
+
+' ============================
+' EXTENSIÓN: SPONSOR
+' ============================
+class Sponsor {
+  - razonSocial: String
+  - cuit: String
+  - nivel: NivelSponsor
+  - montoAporte: double
+  - edicionesPatrocinadas: List<Edicion>
+  - premiosAuspiciados: List<Premio>
+  + auspiciarPremio(p: Premio): void
+  + getRetornoVisibilidad(): double
+  + getMontoTotalAportado(): double
+}
+
+' ============================
+' RELACIONES
+' ============================
+
+' Composiciones (◆) - el contenedor controla el ciclo de vida
+Edicion "1" *-- "1..*" Seccion : organiza >
+Edicion "1" *-- "0..*" Funcion : programa >
+Edicion "1" *-- "0..*" Premio : otorga >
+Edicion "1" *-- "0..*" Empleado : contrata >
+Sala "1" *-- "1..*" Butaca : posee >
+Funcion "1" *-- "0..*" Entrada : genera >
+
+' Agregaciones (◇) - las partes existen independientemente
+Seccion "1..*" o-- "1..*" Pelicula : agrupa >
+
+' Asociaciones simples
+Pelicula "*" --> "1" Director : dirigida por >
+Pelicula "*" --> "0..*" Actor : protagonizada por >
+Funcion "*" --> "1" Pelicula : proyecta >
+Funcion "*" --> "1" Sala : se realiza en >
+Entrada "*" --> "1" Butaca : asigna >
+Entrada "*" --> "1" Espectador : pertenece a >
+Evaluacion "*" --> "1" MiembroJurado : realizada por >
+Evaluacion "*" --> "1" Pelicula : sobre >
+Premio "*" --> "0..1" Pelicula : reconoce >
+Premio "*" --> "0..1" Persona : entregado a >
+Premio "*" --> "1" Seccion : pertenece a >
+Acomodador "*" --> "0..*" Funcion : asignado a >
+
+' Relaciones de la extensión Sponsor
+Sponsor "*" -- "*" Edicion : patrocina >
+Sponsor "1" -- "0..*" Premio : auspicia >
+
+@enduml
