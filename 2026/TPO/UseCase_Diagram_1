@@ -1,0 +1,76 @@
+@startuml CasosDeUso_Gestion
+
+' ============================
+' CONFIGURACIÓN VISUAL
+' ============================
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam actor {
+  BackgroundColor #FEFEFE
+  BorderColor #2C3E50
+}
+skinparam usecase {
+  BackgroundColor #E8F4F8
+  BorderColor #2C3E50
+  ArrowColor #2C3E50
+}
+skinparam package {
+  BackgroundColor #F5F5F5
+  BorderColor #555555
+  FontStyle bold
+}
+
+left to right direction
+
+title Gestión de la Edición
+
+' ============================
+' ACTORES
+' ============================
+actor "Empleado" as Emp <<abstract>>
+actor "Organizador" as Org
+actor "Sponsor" as Sp
+
+Emp <|-- Org
+
+' ============================
+' CASOS DE USO
+' ============================
+rectangle "Sistema de Gestión de Festival de Cine" {
+  usecase "Crear edición" as UC1
+  usecase "Crear sección" as UC2
+  usecase "Registrar película" as UC3
+  usecase "Inscribir película\nen sección" as UC4
+  usecase "Programar función" as UC5
+  usecase "Verificar disponibilidad\nde sala" as UC6
+  usecase "Contratar empleado" as UC7
+  usecase "Asignar acomodador\na función" as UC8
+  usecase "Asignar miembros\ndel jurado" as UC9
+  usecase "Registrar sponsor" as UC10
+  usecase "Patrocinar edición" as UC11
+  usecase "Auspiciar premio" as UC12
+}
+
+' ============================
+' RELACIONES ACTOR - CASO DE USO
+' ============================
+Org --> UC1
+Org --> UC2
+Org --> UC3
+Org --> UC4
+Org --> UC5
+Org --> UC7
+Org --> UC8
+Org --> UC9
+Org --> UC10
+
+Sp --> UC11
+Sp --> UC12
+
+' ============================
+' INCLUDES / EXTENDS
+' ============================
+UC5 ..> UC6 : <<include>>
+UC12 ..> UC11 : <<include>>
+
+@enduml
