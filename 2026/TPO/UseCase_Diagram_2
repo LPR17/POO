@@ -38,7 +38,6 @@ rectangle "Sistema de Gestión de Festival de Cine" {
   usecase "Comprar entrada" as UC14
   usecase "Validar disponibilidad\nde butaca" as UC15
   usecase "Generar comprobante\n(QR / Físico)" as UC16
-  usecase "Aplicar descuento" as UC17
   usecase "Cancelar entrada" as UC18
   usecase "Validar entrada\nen puerta" as UC19
   usecase "Reportar entrada\ninválida" as UC20
@@ -60,7 +59,6 @@ Aco --> UC21
 ' ============================
 UC14 ..> UC15 : <<include>>
 UC14 ..> UC16 : <<include>>
-UC17 ..> UC14 : <<extend>>
 UC20 ..> UC19 : <<extend>>
 
 @enduml
