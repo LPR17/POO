@@ -1,0 +1,33 @@
+@startuml SecuenciaOtorgarPremios
+
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2C3E50
+  LifeLineBorderColor #2C3E50
+  ParticipantBorderColor #2C3E50
+  ParticipantBackgroundColor #FFFBE6
+  ParticipantFontStyle bold
+  ActorBorderColor #2C3E50
+  ActorBackgroundColor #E8F4F8
+  ActorFontStyle bold
+}
+
+title Diagrama de Secuencia: Otorgar Premios al Cierre del Festival
+
+actor "Organizador" as ORG
+participant "edicion : Edicion" as ED
+participant "seccion : Seccion" as S
+participant "premio : Premio" as PR
+
+ORG -> ED : otorgarPremios()
+
+ED -> S : getPeliculaGanadora()
+S --> ED : peliculaGanadora
+
+create PR
+ED -> PR : new Premio(categoria, peliculaGanadora, seccion)
+PR --> ED : premio
+
+ED --> ORG : premios otorgados
+
+@enduml
