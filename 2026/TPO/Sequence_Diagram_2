@@ -12,7 +12,7 @@ skinparam sequence {
   ActorFontStyle bold
 }
 
-title Diagrama de Secuencia: Otorgar Premios al Cierre del Festival
+title Otorgar Premios
 
 actor "Organizador" as ORG
 participant "edicion : Edicion" as ED
