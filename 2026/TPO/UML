@@ -106,7 +106,7 @@ abstract class Empleado {
   - legajo: String
   - sueldo: double
   - edicionAsignada: Edicion
-  + getRol(): String
+  + {abstract} getRol(): String
 }
 
 class Acomodador {
