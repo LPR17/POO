@@ -4,7 +4,6 @@
 ' CONFIGURACIÓN VISUAL
 ' ============================
 skinparam classAttributeIconSize 0
-skinparam classFontStyle bold
 skinparam shadowing false
 skinparam nodesep 80
 skinparam ranksep 90
