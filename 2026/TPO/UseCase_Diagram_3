@@ -19,7 +19,7 @@ skinparam package {
 
 left to right direction
 
-title Subsistema 3: Evaluación y Premios
+title Evaluación y Premios Películas
 
 ' ============================
 ' ACTORES
@@ -32,7 +32,7 @@ actor "Sponsor" as Sp
 ' ============================
 ' CASOS DE USO
 ' ============================
-rectangle "Sistema de Festival - Evaluación" {
+rectangle "Sistema de Gestión de Festival de Cine" {
   usecase "Consultar películas\na evaluar" as UC22
   usecase "Evaluar película" as UC23
   usecase "Calcular puntajes\npromedio" as UC25
