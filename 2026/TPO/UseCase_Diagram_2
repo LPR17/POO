@@ -1,0 +1,66 @@
+@startuml CasosDeUso_Venta
+
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam actor {
+  BackgroundColor #FEFEFE
+  BorderColor #2C3E50
+}
+skinparam usecase {
+  BackgroundColor #FFF5E6
+  BorderColor #2C3E50
+  ArrowColor #2C3E50
+}
+skinparam package {
+  BackgroundColor #F5F5F5
+  BorderColor #555555
+  FontStyle bold
+}
+
+left to right direction
+
+title Venta y Validación de Entradas
+
+' ============================
+' ACTORES
+' ============================
+actor "Espectador" as Esp
+actor "Empleado" as Emp <<abstract>>
+actor "Acomodador" as Aco
+
+Emp <|-- Aco
+
+' ============================
+' CASOS DE USO
+' ============================
+rectangle "Sistema de Festival - Venta" {
+  usecase "Consultar cartelera" as UC13
+  usecase "Comprar entrada" as UC14
+  usecase "Validar disponibilidad\nde butaca" as UC15
+  usecase "Generar comprobante\n(QR / Físico)" as UC16
+  usecase "Aplicar descuento" as UC17
+  usecase "Cancelar entrada" as UC18
+  usecase "Validar entrada\nen puerta" as UC19
+  usecase "Reportar entrada\ninválida" as UC20
+  usecase "Ubicar espectador\nen butaca" as UC21
+}
+
+' ============================
+' RELACIONES ACTOR - CASO DE USO
+' ============================
+Esp --> UC13
+Esp --> UC14
+Esp --> UC18
+
+Aco --> UC19
+Aco --> UC21
+
+' ============================
+' INCLUDES / EXTENDS
+' ============================
+UC14 ..> UC15 : <<include>>
+UC14 ..> UC16 : <<include>>
+UC17 ..> UC14 : <<extend>>
+UC20 ..> UC19 : <<extend>>
+
+@enduml
