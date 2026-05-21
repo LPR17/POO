@@ -70,8 +70,6 @@ abstract class Persona  {
   - nombre: String
   - apellido: String
   - dni: String
-  - nacionalidad: String
-  - fechaNacimiento: LocalDate
   + getNombreCompleto(): String
   + {abstract} mostrarInfo(): String
 }
@@ -89,7 +87,6 @@ class Actor {
 }
 
 class MiembroJurado {
-  - especialidad: String
   - evaluacionesRealizadas: List<Evaluacion>
   + evaluar(p: Pelicula, puntaje: int, com: String): Evaluacion
   + mostrarInfo(): String
@@ -108,9 +105,7 @@ class Espectador {
 abstract class Empleado {
   - legajo: String
   - sueldo: double
-  - fechaIngreso: LocalDate
   - edicionAsignada: Edicion
-  + calcularAntiguedad(): int
   + {abstract} getRol(): String
 }
 
@@ -144,6 +139,8 @@ Empleado <|-- Organizador
 class Edicion {
   - numero: int
   - anio: int
+  - ciudad: String
+  - venue: String
   - nombreFestival: String
   - fechaInicio: LocalDate
   - fechaFin: LocalDate
