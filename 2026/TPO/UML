@@ -39,6 +39,7 @@ enum Genero {
 enum EstadoButaca {
   LIBRE
   OCUPADA
+  RESERVADA
 }
 
 enum Categoria {
