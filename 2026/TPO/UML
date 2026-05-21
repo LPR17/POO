@@ -63,6 +63,11 @@ enum NivelSponsor {
   COLABORA
 }
 
+enum TipoEntrada {
+  QR
+  FISICA
+}
+
 ' ============================
 ' JERARQUÍA DE PERSONAS
 ' ============================
@@ -207,7 +212,7 @@ class Funcion {
   - pelicula: Pelicula
   - sala: Sala
   - entradas: List<Entrada>
-  + venderEntrada(esp: Espectador, b: Butaca, tipo: String): Entrada
+  + venderEntrada(esp: Espectador, b: Butaca, tipo: TipoEntrada): Entrada
   + getButacasDisponibles(): List<Butaca>
   + getPorcentajeOcupacion(): double
 }
