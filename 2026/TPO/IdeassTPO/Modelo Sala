@@ -230,6 +230,7 @@ import ar.edu.festivalcine.modelo.persona.empleado.Acomodador;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import ar.edu.festivalcine.modelo.entrada.Entrada
 
 /**
  * Representa una función programada del festival.
@@ -249,6 +250,7 @@ public class Funcion {
     private Sala sala;
     private LocalDateTime fechaHora;
     private double precioBase;
+private List<Entrada> entradasVendidas;
 
     // Relaciones
     private List<Butaca> butacas;
@@ -282,6 +284,7 @@ public class Funcion {
         this.precioBase = precioBase;
         this.butacas = sala.generarButacas();   // genera el mapa de butacas para esta función
         this.acomodadores = new ArrayList<>();
+        this.entradasVendidas = new ArrayList<>();
     }
 
     // ============================
@@ -376,6 +379,32 @@ public class Funcion {
         Butaca butaca = buscarButaca(codigo);
         butaca.reservar();
     }
+
+    /**
+ * Registra una entrada vendida en la función.
+ */
+public void registrarEntradaVendida(Entrada entrada) {
+    if (entrada == null) {
+        throw new DatosInvalidosException("La entrada no puede ser nula.");
+    }
+    if (!entradasVendidas.contains(entrada)) {
+        entradasVendidas.add(entrada);
+    }
+}
+
+/**
+ * Quita una entrada vendida (en caso de cancelación).
+ */
+public void quitarEntradaVendida(Entrada entrada) {
+    entradasVendidas.remove(entrada);
+}
+
+/**
+ * Devuelve una copia de la lista de entradas vendidas.
+ */
+public List<Entrada> getEntradasVendidas() {
+    return new ArrayList<>(entradasVendidas);
+}
 
     // ============================
     // GETTERS Y SETTERS
