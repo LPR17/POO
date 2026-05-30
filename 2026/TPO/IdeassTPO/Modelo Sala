@@ -1,0 +1,428 @@
+package ar.edu.festivalcine.modelo.sala;
+
+import ar.edu.festivalcine.enums.EstadoButaca;
+import ar.edu.festivalcine.excepciones.ButacaOcupadaException;
+import ar.edu.festivalcine.excepciones.DatosInvalidosException;
+
+/**
+ * Representa una butaca dentro de una función específica.
+ * Cada función tiene su propio conjunto de butacas, lo que permite
+ * gestionar la ocupación de manera independiente entre funciones.
+ */
+public class Butaca {
+
+    // ============================
+    // ATRIBUTOS
+    // ============================
+    private String fila;          // ej: "A", "B", "C"
+    private int numero;           // ej: 1, 2, 3
+    private EstadoButaca estado;
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public Butaca(String fila, int numero) {
+        if (fila == null || fila.isBlank()) {
+            throw new DatosInvalidosException("La fila de la butaca no puede estar vacía.");
+        }
+        if (numero <= 0) {
+            throw new DatosInvalidosException("El número de butaca debe ser positivo.");
+        }
+
+        this.fila = fila.toUpperCase();
+        this.numero = numero;
+        this.estado = EstadoButaca.LIBRE;  // estado inicial
+    }
+
+    // ============================
+    // MÉTODOS DE NEGOCIO
+    // ============================
+    /**
+     * Indica si la butaca está disponible para ser reservada.
+     */
+    public boolean estaDisponible() {
+        return estado == EstadoButaca.LIBRE;
+    }
+
+    /**
+     * Reserva la butaca, cambiando su estado a OCUPADA.
+     * Si la butaca ya está ocupada, lanza una excepción.
+     */
+    public void reservar() {
+        if (!estaDisponible()) {
+            throw new ButacaOcupadaException(
+                    "La butaca " + getCodigo() + " ya está ocupada.");
+        }
+        this.estado = EstadoButaca.OCUPADA;
+    }
+
+    /**
+     * Libera la butaca, dejándola disponible nuevamente.
+     * Útil si se cancela una entrada.
+     */
+    public void liberar() {
+        this.estado = EstadoButaca.LIBRE;
+    }
+
+    /**
+     * Devuelve un código identificador de la butaca (ej: "A5").
+     */
+    public String getCodigo() {
+        return fila + numero;
+    }
+
+    // ============================
+    // GETTERS Y SETTERS
+    // ============================
+    public String getFila() { return fila; }
+    public int getNumero() { return numero; }
+    public EstadoButaca getEstado() { return estado; }
+
+    // ============================
+    // EQUALS, HASHCODE Y TOSTRING
+    // ============================
+    /**
+     * Dos butacas son iguales si tienen la misma fila y número.
+     * Atención: esto sólo tiene sentido dentro de una misma función,
+     * ya que cada función tiene su propio conjunto de butacas.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Butaca)) return false;
+        Butaca otra = (Butaca) obj;
+        return this.fila.equals(otra.fila) && this.numero == otra.numero;
+    }
+
+    @Override
+    public int hashCode() {
+        return fila.hashCode() * 31 + numero;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Butaca %s [%s]", getCodigo(), estado);
+    }
+}
+
+//===============================================================================================================
+package ar.edu.festivalcine.modelo.sala;
+
+import ar.edu.festivalcine.excepciones.DatosInvalidosException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Representa una sala física del festival donde se proyectan películas.
+ * La sala define su capacidad y la disposición de butacas (filas x columnas),
+ * pero NO mantiene las butacas individuales.
+ *
+ * Cada Funcion programada en la sala genera su propio conjunto de butacas
+ * para gestionar la ocupación de manera independiente.
+ */
+public class Sala {
+
+    // ============================
+    // ATRIBUTOS
+    // ============================
+    private String nombre;        // ej: "Sala 1 - Lumière"
+    private int cantidadFilas;    // ej: 10 filas (A-J)
+    private int butacasPorFila;   // ej: 12 butacas por fila
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public Sala(String nombre, int cantidadFilas, int butacasPorFila) {
+        if (nombre == null || nombre.isBlank()) {
+            throw new DatosInvalidosException("El nombre de la sala no puede estar vacío.");
+        }
+        if (cantidadFilas <= 0) {
+            throw new DatosInvalidosException("La cantidad de filas debe ser positiva.");
+        }
+        if (butacasPorFila <= 0) {
+            throw new DatosInvalidosException("Las butacas por fila deben ser positivas.");
+        }
+        if (cantidadFilas > 26) {
+            throw new DatosInvalidosException("La sala no puede tener más de 26 filas (A-Z).");
+        }
+
+        this.nombre = nombre;
+        this.cantidadFilas = cantidadFilas;
+        this.butacasPorFila = butacasPorFila;
+    }
+
+    // ============================
+    // MÉTODOS DE NEGOCIO
+    // ============================
+    /**
+     * Calcula la capacidad total de la sala.
+     */
+    public int getCapacidadTotal() {
+        return cantidadFilas * butacasPorFila;
+    }
+
+    /**
+     * Genera un nuevo conjunto de butacas para una función.
+     * Las butacas se nombran con letras (A, B, C...) para las filas
+     * y números (1, 2, 3...) para los asientos dentro de cada fila.
+     *
+     * Este método se invoca al crear una nueva Funcion en esta sala.
+     */
+    public List<Butaca> generarButacas() {
+        List<Butaca> butacas = new ArrayList<>();
+
+        for (int i = 0; i < cantidadFilas; i++) {
+            // Convierte 0 -> "A", 1 -> "B", etc.
+            String fila = String.valueOf((char) ('A' + i));
+
+            for (int j = 1; j <= butacasPorFila; j++) {
+                butacas.add(new Butaca(fila, j));
+            }
+        }
+
+        return butacas;
+    }
+
+    // ============================
+    // GETTERS Y SETTERS
+    // ============================
+    public String getNombre() { return nombre; }
+
+    public int getCantidadFilas() { return cantidadFilas; }
+    public int getButacasPorFila() { return butacasPorFila; }
+
+    // ============================
+    // EQUALS, HASHCODE Y TOSTRING
+    // ============================
+    /**
+     * Dos salas son iguales si tienen el mismo nombre.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Sala)) return false;
+        Sala otra = (Sala) obj;
+        return this.nombre.equalsIgnoreCase(otra.nombre);
+    }
+
+    @Override
+    public int hashCode() {
+        return nombre.toLowerCase().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Sala '%s' (%d x %d = %d butacas)",
+                nombre, cantidadFilas, butacasPorFila, getCapacidadTotal());
+    }
+}
+
+//======================================================================================================================0
+package ar.edu.festivalcine.modelo.sala;
+
+import ar.edu.festivalcine.excepciones.ButacaOcupadaException;
+import ar.edu.festivalcine.excepciones.DatosInvalidosException;
+import ar.edu.festivalcine.excepciones.EntidadNoEncontradaException;
+import ar.edu.festivalcine.modelo.festival.Pelicula;
+import ar.edu.festivalcine.modelo.persona.empleado.Acomodador;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Representa una función programada del festival.
+ * Una función vincula una película con una sala en una fecha y hora específicas,
+ * y gestiona su propio conjunto de butacas (independiente de otras funciones
+ * en la misma sala).
+ *
+ * NOTA: La relación con Entrada se agregará cuando definamos esa clase.
+ */
+public class Funcion {
+
+    // ============================
+    // ATRIBUTOS
+    // ============================
+    private String id;
+    private Pelicula pelicula;
+    private Sala sala;
+    private LocalDateTime fechaHora;
+    private double precioBase;
+
+    // Relaciones
+    private List<Butaca> butacas;
+    private List<Acomodador> acomodadores;
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public Funcion(String id, Pelicula pelicula, Sala sala,
+                   LocalDateTime fechaHora, double precioBase) {
+        if (id == null || id.isBlank()) {
+            throw new DatosInvalidosException("El ID de la función no puede estar vacío.");
+        }
+        if (pelicula == null) {
+            throw new DatosInvalidosException("La función debe tener una película asociada.");
+        }
+        if (sala == null) {
+            throw new DatosInvalidosException("La función debe tener una sala asignada.");
+        }
+        if (fechaHora == null) {
+            throw new DatosInvalidosException("La fecha y hora de la función son obligatorias.");
+        }
+        if (precioBase < 0) {
+            throw new DatosInvalidosException("El precio base no puede ser negativo.");
+        }
+
+        this.id = id;
+        this.pelicula = pelicula;
+        this.sala = sala;
+        this.fechaHora = fechaHora;
+        this.precioBase = precioBase;
+        this.butacas = sala.generarButacas();   // genera el mapa de butacas para esta función
+        this.acomodadores = new ArrayList<>();
+    }
+
+    // ============================
+    // MÉTODOS DE NEGOCIO
+    // ============================
+    /**
+     * Devuelve la fecha y hora de finalización de la función,
+     * calculada a partir de la duración de la película.
+     */
+    public LocalDateTime getFechaHoraFin() {
+        return fechaHora.plusMinutes(pelicula.getDuracionMinutos());
+    }
+
+    /**
+     * Verifica si esta función se superpone temporalmente con otra
+     * en la misma sala. Útil para validar al programar nuevas funciones.
+     */
+    public boolean seSuperponeCon(Funcion otra) {
+        if (!this.sala.equals(otra.sala)) {
+            return false;  // si son salas distintas, no hay superposición
+        }
+        // Hay superposición si los intervalos se cruzan
+        return this.fechaHora.isBefore(otra.getFechaHoraFin())
+                && otra.fechaHora.isBefore(this.getFechaHoraFin());
+    }
+
+    /**
+     * Busca una butaca específica por su código (ej: "A5").
+     * Lanza excepción si no existe.
+     */
+    public Butaca buscarButaca(String codigo) {
+        for (Butaca b : butacas) {
+            if (b.getCodigo().equalsIgnoreCase(codigo)) {
+                return b;
+            }
+        }
+        throw new EntidadNoEncontradaException(
+                "No existe la butaca '" + codigo + "' en esta función.");
+    }
+
+    /**
+     * Devuelve una lista solo con las butacas disponibles para vender.
+     */
+    public List<Butaca> getButacasDisponibles() {
+        List<Butaca> disponibles = new ArrayList<>();
+        for (Butaca b : butacas) {
+            if (b.estaDisponible()) {
+                disponibles.add(b);
+            }
+        }
+        return disponibles;
+    }
+
+    /**
+     * Cuenta cuántas butacas están ocupadas.
+     */
+    public int getCantidadOcupadas() {
+        int contador = 0;
+        for (Butaca b : butacas) {
+            if (!b.estaDisponible()) {
+                contador++;
+            }
+        }
+        return contador;
+    }
+
+    /**
+     * Devuelve el porcentaje de ocupación de la función (0-100).
+     */
+    public double getPorcentajeOcupacion() {
+        if (butacas.isEmpty()) return 0.0;
+        return (getCantidadOcupadas() * 100.0) / butacas.size();
+    }
+
+    /**
+     * Asigna un acomodador a esta función.
+     */
+    public void asignarAcomodador(Acomodador acomodador) {
+        if (acomodador == null) {
+            throw new DatosInvalidosException("El acomodador no puede ser nulo.");
+        }
+        if (!acomodadores.contains(acomodador)) {
+            acomodadores.add(acomodador);
+        }
+    }
+
+    /**
+     * Reserva una butaca específica (delega en el método de Butaca).
+     * Lanza ButacaOcupadaException si ya estaba ocupada.
+     */
+    public void reservarButaca(String codigo) {
+        Butaca butaca = buscarButaca(codigo);
+        butaca.reservar();
+    }
+
+    // ============================
+    // GETTERS Y SETTERS
+    // ============================
+    public String getId() { return id; }
+    public Pelicula getPelicula() { return pelicula; }
+    public Sala getSala() { return sala; }
+    public LocalDateTime getFechaHora() { return fechaHora; }
+
+    public double getPrecioBase() { return precioBase; }
+    public void setPrecioBase(double precioBase) {
+        if (precioBase < 0) {
+            throw new DatosInvalidosException("El precio base no puede ser negativo.");
+        }
+        this.precioBase = precioBase;
+    }
+
+    public List<Butaca> getButacas() {
+        return new ArrayList<>(butacas);
+    }
+
+    public List<Acomodador> getAcomodadores() {
+        return new ArrayList<>(acomodadores);
+    }
+
+    // ============================
+    // EQUALS, HASHCODE Y TOSTRING
+    // ============================
+    /**
+     * Dos funciones son iguales si tienen el mismo ID.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Funcion)) return false;
+        Funcion otra = (Funcion) obj;
+        return this.id.equals(otra.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Función [%s] '%s' - %s - %s (%.0f%% ocupada)",
+                id, pelicula.getTitulo(), sala.getNombre(), fechaHora, getPorcentajeOcupacion());
+    }
+}
