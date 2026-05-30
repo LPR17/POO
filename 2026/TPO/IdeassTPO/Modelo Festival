@@ -1,0 +1,412 @@
+package ar.edu.festivalcine.modelo.festival;
+
+import ar.edu.festivalcine.enums.Genero;
+import ar.edu.festivalcine.excepciones.DatosInvalidosException;
+import ar.edu.festivalcine.modelo.persona.Actor;
+import ar.edu.festivalcine.modelo.persona.Director;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Representa una película participante del festival.
+ * Una película tiene un director, uno o más actores, y puede estar inscripta
+ * en una o más secciones de una edición.
+ */
+public class Pelicula {
+
+    // ============================
+    // ATRIBUTOS
+    // ============================
+    private String id;
+    private String titulo;
+    private int duracionMinutos;
+    private int anio;
+    private Genero genero;
+    private String sinopsis;
+
+    // Relaciones
+    private Director director;
+    private List<Actor> actores;
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public Pelicula(String id, String titulo, int duracionMinutos, int anio,
+                    Genero genero, String sinopsis, Director director) {
+        if (id == null || id.isBlank()) {
+            throw new DatosInvalidosException("El ID de la película no puede estar vacío.");
+        }
+        if (titulo == null || titulo.isBlank()) {
+            throw new DatosInvalidosException("El título no puede estar vacío.");
+        }
+        if (duracionMinutos <= 0) {
+            throw new DatosInvalidosException("La duración debe ser mayor a 0.");
+        }
+        if (anio < 1895) {  // año del primer film de la historia
+            throw new DatosInvalidosException("El año de la película es inválido.");
+        }
+        if (genero == null) {
+            throw new DatosInvalidosException("El género es obligatorio.");
+        }
+        if (director == null) {
+            throw new DatosInvalidosException("La película debe tener un director.");
+        }
+
+        this.id = id;
+        this.titulo = titulo;
+        this.duracionMinutos = duracionMinutos;
+        this.anio = anio;
+        this.genero = genero;
+        this.sinopsis = sinopsis;
+        this.director = director;
+        this.actores = new ArrayList<>();
+    }
+
+    // ============================
+    // MÉTODOS DE NEGOCIO
+    // ============================
+    /**
+     * Agrega un actor al elenco de la película.
+     * No permite duplicados.
+     */
+    public void agregarActor(Actor actor) {
+        if (actor == null) {
+            throw new DatosInvalidosException("El actor no puede ser nulo.");
+        }
+        if (!actores.contains(actor)) {
+            actores.add(actor);
+        }
+    }
+
+    /**
+     * Quita un actor del elenco si existe.
+     */
+    public void quitarActor(Actor actor) {
+        actores.remove(actor);
+    }
+
+    // ============================
+    // GETTERS Y SETTERS
+    // ============================
+    public String getId() { return id; }
+
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) {
+        if (titulo == null || titulo.isBlank()) {
+            throw new DatosInvalidosException("El título no puede estar vacío.");
+        }
+        this.titulo = titulo;
+    }
+
+    public int getDuracionMinutos() { return duracionMinutos; }
+    public int getAnio() { return anio; }
+    public Genero getGenero() { return genero; }
+
+    public String getSinopsis() { return sinopsis; }
+    public void setSinopsis(String sinopsis) { this.sinopsis = sinopsis; }
+
+    public Director getDirector() { return director; }
+    public void setDirector(Director director) {
+        if (director == null) {
+            throw new DatosInvalidosException("El director no puede ser nulo.");
+        }
+        this.director = director;
+    }
+
+    /**
+     * Devuelve una copia de la lista de actores para evitar modificaciones externas.
+     */
+    public List<Actor> getActores() {
+        return new ArrayList<>(actores);
+    }
+
+    // ============================
+    // EQUALS, HASHCODE Y TOSTRING
+    // ============================
+    /**
+     * Dos películas son iguales si tienen el mismo ID.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Pelicula)) return false;
+        Pelicula otra = (Pelicula) obj;
+        return this.id.equals(otra.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("'%s' (%d) - %s - Dir: %s",
+                titulo, anio, genero, director.getNombreCompleto());
+    }
+}
+
+
+//========================================================================================================
+package ar.edu.festivalcine.modelo.festival;
+
+import ar.edu.festivalcine.excepciones.DatosInvalidosException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Representa una sección dentro de una edición del festival.
+ * Cada sección agrupa películas que compiten en la misma categoría
+ * (ej: "Competencia Oficial", "Documentales", "Cortometrajes").
+ */
+public class Seccion {
+
+    // ============================
+    // ATRIBUTOS
+    // ============================
+    private String nombre;
+    private String descripcion;
+    private List<Pelicula> peliculas;
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public Seccion(String nombre, String descripcion) {
+        if (nombre == null || nombre.isBlank()) {
+            throw new DatosInvalidosException("El nombre de la sección no puede estar vacío.");
+        }
+
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.peliculas = new ArrayList<>();
+    }
+
+    // ============================
+    // MÉTODOS DE NEGOCIO
+    // ============================
+    /**
+     * Inscribe una película en la sección.
+     * No permite duplicados.
+     */
+    public void inscribirPelicula(Pelicula pelicula) {
+        if (pelicula == null) {
+            throw new DatosInvalidosException("La película no puede ser nula.");
+        }
+        if (!peliculas.contains(pelicula)) {
+            peliculas.add(pelicula);
+        }
+    }
+
+    /**
+     * Retira una película de la sección si está inscripta.
+     */
+    public void quitarPelicula(Pelicula pelicula) {
+        peliculas.remove(pelicula);
+    }
+
+    /**
+     * Indica si la sección contiene la película dada.
+     */
+    public boolean contienePelicula(Pelicula pelicula) {
+        return peliculas.contains(pelicula);
+    }
+
+    /**
+     * Devuelve la cantidad de películas inscriptas en la sección.
+     */
+    public int getCantidadPeliculas() {
+        return peliculas.size();
+    }
+
+    // ============================
+    // GETTERS Y SETTERS
+    // ============================
+    public String getNombre() { return nombre; }
+
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
+    /**
+     * Devuelve una copia de la lista de películas para evitar modificaciones externas.
+     */
+    public List<Pelicula> getPeliculas() {
+        return new ArrayList<>(peliculas);
+    }
+
+    // ============================
+    // EQUALS, HASHCODE Y TOSTRING
+    // ============================
+    /**
+     * Dos secciones son iguales si tienen el mismo nombre.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Seccion)) return false;
+        Seccion otra = (Seccion) obj;
+        return this.nombre.equalsIgnoreCase(otra.nombre);
+    }
+
+    @Override
+    public int hashCode() {
+        return nombre.toLowerCase().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Sección '%s' (%d películas)", nombre, peliculas.size());
+    }
+}
+
+//========================================================================================================================
+package ar.edu.festivalcine.modelo.festival;
+
+import ar.edu.festivalcine.excepciones.DatosInvalidosException;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Representa una edición anual del festival de cine.
+ * Centraliza las secciones, fechas y datos generales de una edición específica.
+ *
+ * NOTA: Las relaciones con Funcion, Premio y Sponsor se agregarán
+ * cuando definamos esas clases.
+ */
+public class Edicion {
+
+    // ============================
+    // ATRIBUTOS
+    // ============================
+    private int numero;            // ej: 35 (35° edición del festival)
+    private int anio;
+    private LocalDate fechaInicio;
+    private LocalDate fechaFin;
+    private String lema;           // ej: "El cine que nos une"
+
+    // Relaciones
+    private List<Seccion> secciones;
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public Edicion(int numero, int anio, LocalDate fechaInicio, LocalDate fechaFin, String lema) {
+        if (numero <= 0) {
+            throw new DatosInvalidosException("El número de edición debe ser positivo.");
+        }
+        if (anio < 1900) {
+            throw new DatosInvalidosException("El año de la edición es inválido.");
+        }
+        if (fechaInicio == null || fechaFin == null) {
+            throw new DatosInvalidosException("Las fechas de inicio y fin son obligatorias.");
+        }
+        if (fechaFin.isBefore(fechaInicio)) {
+            throw new DatosInvalidosException("La fecha de fin no puede ser anterior a la de inicio.");
+        }
+
+        this.numero = numero;
+        this.anio = anio;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.lema = lema;
+        this.secciones = new ArrayList<>();
+    }
+
+    // ============================
+    // MÉTODOS DE NEGOCIO
+    // ============================
+    /**
+     * Agrega una sección a la edición.
+     * No permite secciones duplicadas (mismo nombre).
+     */
+    public void agregarSeccion(Seccion seccion) {
+        if (seccion == null) {
+            throw new DatosInvalidosException("La sección no puede ser nula.");
+        }
+        if (secciones.contains(seccion)) {
+            throw new DatosInvalidosException(
+                    "Ya existe una sección con el nombre '" + seccion.getNombre() + "'.");
+        }
+        secciones.add(seccion);
+    }
+
+    /**
+     * Busca una sección por nombre (case-insensitive).
+     * Retorna null si no la encuentra.
+     */
+    public Seccion buscarSeccion(String nombre) {
+        for (Seccion s : secciones) {
+            if (s.getNombre().equalsIgnoreCase(nombre)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Indica si la edición está actualmente en curso (la fecha de hoy
+     * está entre fechaInicio y fechaFin).
+     */
+    public boolean estaEnCurso() {
+        LocalDate hoy = LocalDate.now();
+        return !hoy.isBefore(fechaInicio) && !hoy.isAfter(fechaFin);
+    }
+
+    /**
+     * Devuelve la cantidad total de películas inscriptas en todas las secciones.
+     */
+    public int getTotalPeliculas() {
+        int total = 0;
+        for (Seccion s : secciones) {
+            total += s.getCantidadPeliculas();
+        }
+        return total;
+    }
+
+    // ============================
+    // GETTERS Y SETTERS
+    // ============================
+    public int getNumero() { return numero; }
+    public int getAnio() { return anio; }
+    public LocalDate getFechaInicio() { return fechaInicio; }
+    public LocalDate getFechaFin() { return fechaFin; }
+
+    public String getLema() { return lema; }
+    public void setLema(String lema) { this.lema = lema; }
+
+    /**
+     * Devuelve una copia de la lista de secciones para evitar modificaciones externas.
+     */
+    public List<Seccion> getSecciones() {
+        return new ArrayList<>(secciones);
+    }
+
+    // ============================
+    // EQUALS, HASHCODE Y TOSTRING
+    // ============================
+    /**
+     * Dos ediciones son iguales si tienen el mismo número y año.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Edicion)) return false;
+        Edicion otra = (Edicion) obj;
+        return this.numero == otra.numero && this.anio == otra.anio;
+    }
+
+    @Override
+    public int hashCode() {
+        return numero * 31 + anio;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Edición N° %d (%d) - %d secciones",
+                numero, anio, secciones.size());
+    }
+}
+
