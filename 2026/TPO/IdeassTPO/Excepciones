@@ -1,0 +1,106 @@
+package ar.edu.festivalcine.excepciones;
+
+/**
+ * Excepción lanzada cuando se intenta crear o modificar una entidad
+ * con datos inválidos según las reglas del dominio.
+ *
+ * Ejemplos:
+ * - Nombre vacío o nulo
+ * - Fecha de nacimiento posterior a la fecha actual
+ * - Precio negativo
+ * - Capacidad de sala menor o igual a cero
+ */
+public class DatosInvalidosException extends RuntimeException {
+
+    public DatosInvalidosException(String mensaje) {
+        super(mensaje);
+    }
+}
+
+
+package ar.edu.festivalcine.excepciones;
+
+/**
+ * Excepción lanzada cuando se intenta acceder a una entidad
+ * (película, edición, espectador, etc.) que no existe en el sistema.
+ *
+ * Ejemplos:
+ * - Buscar una película por ID inexistente
+ * - Acceder a una edición no registrada
+ * - Consultar un espectador con DNI no encontrado
+ */
+public class EntidadNoEncontradaException extends RuntimeException {
+
+    public EntidadNoEncontradaException(String mensaje) {
+        super(mensaje);
+    }
+}
+
+
+package ar.edu.festivalcine.excepciones;
+
+/**
+ * Excepción lanzada cuando se intenta vender una entrada para una butaca
+ * que ya se encuentra ocupada o reservada en una función específica.
+ *
+ * Garantiza la regla de negocio: "una butaca solo puede venderse una vez
+ * por función".
+ */
+public class ButacaOcupadaException extends RuntimeException {
+
+    public ButacaOcupadaException(String mensaje) {
+        super(mensaje);
+    }
+}
+
+
+package ar.edu.festivalcine.excepciones;
+
+/**
+ * Excepción lanzada cuando se intenta programar una función en una sala
+ * y horario que se superpone con otra función ya existente.
+ *
+ * Garantiza la regla de negocio: "no pueden existir dos funciones
+ * simultáneas en la misma sala".
+ */
+public class FuncionSuperpuestaException extends RuntimeException {
+
+    public FuncionSuperpuestaException(String mensaje) {
+        super(mensaje);
+    }
+}
+
+package ar.edu.festivalcine.excepciones;
+
+/**
+ * Excepción lanzada cuando se intenta superar la capacidad máxima
+ * de una sala al asignar butacas o vender entradas.
+ *
+ * Garantiza la regla de negocio: "no se pueden vender más entradas
+ * que la capacidad de la sala".
+ */
+public class CapacidadExcedidaException extends RuntimeException {
+
+    public CapacidadExcedidaException(String mensaje) {
+        super(mensaje);
+    }
+}
+
+package ar.edu.festivalcine.excepciones;
+
+/**
+ * Excepción lanzada cuando se intenta validar una entrada que es inválida
+ * en el momento del ingreso a una función.
+ *
+ * Posibles causas:
+ * - La entrada ya fue utilizada previamente
+ * - El código QR es inválido o está adulterado
+ * - La entrada corresponde a otra función
+ * - La entrada fue cancelada
+ */
+public class EntradaInvalidaException extends RuntimeException {
+
+    public EntradaInvalidaException(String mensaje) {
+        super(mensaje);
+    }
+}
