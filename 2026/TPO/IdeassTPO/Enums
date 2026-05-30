@@ -1,0 +1,80 @@
+package ar.edu.festivalcine.enums;
+
+/**
+ * Enumeración que representa los géneros cinematográficos posibles
+ * para una película dentro del festival.
+ */
+public enum Genero {
+    DRAMA,
+    COMEDIA,
+    ACCION,
+    DOCUMENTAL,
+    TERROR,
+    SUSPENSO,
+    ROMANCE,
+    ANIMACION,
+    CIENCIA_FICCION,
+    OTRO;
+}
+
+package ar.edu.festivalcine.enums;
+
+/**
+ * Estados posibles de una butaca durante una función.
+ * - LIBRE: disponible para ser reservada.
+ * - OCUPADA: ya fue vendida y no puede asignarse a otra entrada.
+ * - RESERVADA: bloqueada temporalmente (ej: durante el proceso de compra).
+ */
+public enum EstadoButaca {
+    LIBRE,
+    OCUPADA,
+    RESERVADA;
+}
+
+package ar.edu.festivalcine.enums;
+
+/**
+ * Categorías de premios que pueden otorgarse al cierre del festival.
+ * Cada premio se asocia a una categoría específica.
+ */
+public enum Categoria {
+    MEJOR_PELICULA,
+    MEJOR_DIRECTOR,
+    MEJOR_ACTOR,
+    MEJOR_ACTRIZ,
+    MEJOR_GUION,
+    MEJOR_FOTOGRAFIA,
+    PREMIO_DEL_PUBLICO;
+}
+
+
+
+package ar.edu.festivalcine.enums;
+
+/**
+ * Jerarquía de niveles de patrocinio según el aporte económico
+ * realizado por el sponsor a la edición del festival.
+ *
+ * - INVITA: sponsor principal, mayor aporte económico.
+ * - AUSPICIA: sponsor de premios o secciones específicas.
+ * - COLABORA: sponsor de apoyo, aporte menor.
+ */
+public enum NivelSponsor {
+    INVITA,
+    AUSPICIA,
+    COLABORA;
+}
+package ar.edu.festivalcine.enums;
+
+/**
+ * Tipos de entrada disponibles para la venta.
+ * Se usa como parámetro al momento de comprar/vender una entrada,
+ * para indicar qué subclase concreta de Entrada debe instanciarse.
+ *
+ * - QR: entrada digital con código QR.
+ * - FISICA: entrada impresa con número de serie.
+ */
+public enum TipoEntrada {
+    QR,
+    FISICA;
+}
