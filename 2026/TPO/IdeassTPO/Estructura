@@ -1,0 +1,102 @@
+festivalcine/
+│
+├── src/
+│   └── ar/edu/festivalcine/
+│       │
+│       ├── Main.java                          ← Punto de entrada
+│       │
+│       ├── modelo/                            ← Clases del dominio (POJOs)
+│       │   ├── persona/
+│       │   │   ├── Persona.java               (abstract)
+│       │   │   ├── Director.java
+│       │   │   ├── Actor.java
+│       │   │   ├── MiembroJurado.java
+│       │   │   ├── Espectador.java
+│       │   │   └── empleado/
+│       │   │       ├── Empleado.java          (abstract)
+│       │   │       ├── Acomodador.java
+│       │   │       └── Organizador.java
+│       │   │
+│       │   ├── festival/
+│       │   │   ├── Edicion.java
+│       │   │   ├── Seccion.java
+│       │   │   └── Pelicula.java
+│       │   │
+│       │   ├── sala/
+│       │   │   ├── Sala.java
+│       │   │   ├── Butaca.java
+│       │   │   └── Funcion.java
+│       │   │
+│       │   ├── entrada/
+│       │   │   ├── Entrada.java               (abstract)
+│       │   │   ├── EntradaQR.java
+│       │   │   └── EntradaFisica.java
+│       │   │
+│       │   ├── premio/
+│       │   │   ├── Evaluacion.java
+│       │   │   └── Premio.java
+│       │   │
+│       │   └── sponsor/
+│       │       └── Sponsor.java
+│       │
+│       ├── enums/                             ← Enumeraciones
+│       │   ├── Genero.java
+│       │   ├── EstadoButaca.java
+│       │   ├── Categoria.java
+│       │   ├── NivelSponsor.java
+│       │   └── TipoEntrada.java
+│       │
+│       ├── excepciones/                       ← Excepciones personalizadas
+│       │   ├── ButacaOcupadaException.java
+│       │   ├── FuncionSuperpuestaException.java
+│       │   ├── CapacidadExcedidaException.java
+│       │   ├── EntradaInvalidaException.java
+│       │   ├── DatosInvalidosException.java
+│       │   └── EntidadNoEncontradaException.java
+│       │
+│       ├── servicios/                         ← Lógica de negocio
+│       │   ├── ServicioFestival.java
+│       │   ├── ServicioPelicula.java
+│       │   ├── ServicioFuncion.java
+│       │   ├── ServicioEntrada.java
+│       │   ├── ServicioEvaluacion.java
+│       │   ├── ServicioPremio.java
+│       │   └── ServicioSponsor.java
+│       │
+│       ├── persistencia/                      ← Lectura/escritura de archivos
+│       │   ├── GestorPersistencia.java        (coordinador)
+│       │   ├── ArchivoEdiciones.java
+│       │   ├── ArchivoPeliculas.java
+│       │   ├── ArchivoPersonas.java
+│       │   ├── ArchivoFunciones.java
+│       │   ├── ArchivoEntradas.java
+│       │   ├── ArchivoEvaluaciones.java
+│       │   └── ArchivoSponsors.java
+│       │
+│       ├── ui/                                ← Interfaz de consola
+│       │   ├── MenuPrincipal.java
+│       │   ├── MenuFestival.java
+│       │   ├── MenuPeliculas.java
+│       │   ├── MenuFunciones.java
+│       │   ├── MenuVentas.java
+│       │   ├── MenuEvaluaciones.java
+│       │   ├── MenuSponsors.java
+│       │   └── util/
+│       │       ├── EntradaConsola.java        (lee y valida input)
+│       │       └── FormateadorConsola.java    (imprime tablas, separadores)
+│       │
+│       └── util/                              ← Utilidades generales
+│           ├── GeneradorCodigo.java           (genera códigos únicos)
+│           └── ValidadorFechas.java
+│
+├── data/                                      ← Archivos de persistencia
+│   ├── ediciones.dat
+│   ├── peliculas.dat
+│   ├── personas.dat
+│   ├── funciones.dat
+│   ├── entradas.dat
+│   ├── evaluaciones.dat
+│   └── sponsors.dat
+│
+├── README.txt                                 ← Supuestos y decisiones
+└── .gitignore                                 (opcional, si usás git)
