@@ -1,0 +1,410 @@
+Persona (abstract)
+├── Director
+├── Actor
+├── MiembroJurado
+├── Espectador
+└── Empleado (abstract)
+    ├── Acomodador
+    └── Organizador
+
+// ============================
+Persona.java (clase abstracta base)
+// ============================
+package ar.edu.festivalcine.modelo.persona;
+
+import ar.edu.festivalcine.excepciones.DatosInvalidosException;
+import java.time.LocalDate;
+import java.time.Period;
+
+/**
+ * Clase abstracta que representa a cualquier persona vinculada al festival.
+ * Centraliza los atributos comunes (datos personales) y obliga a las subclases
+ * a definir su propio comportamiento mediante el método abstracto getRol().
+ */
+public abstract class Persona {
+
+    // ============================
+    // ATRIBUTOS
+    // ============================
+    protected String dni;
+    protected String nombre;
+    protected String apellido;
+    protected LocalDate fechaNacimiento;
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public Persona(String dni, String nombre, String apellido, LocalDate fechaNacimiento) {
+        // Validaciones del dominio
+        if (dni == null || dni.isBlank()) {
+            throw new DatosInvalidosException("El DNI no puede estar vacío.");
+        }
+        if (nombre == null || nombre.isBlank()) {
+            throw new DatosInvalidosException("El nombre no puede estar vacío.");
+        }
+        if (apellido == null || apellido.isBlank()) {
+            throw new DatosInvalidosException("El apellido no puede estar vacío.");
+        }
+        if (fechaNacimiento == null || fechaNacimiento.isAfter(LocalDate.now())) {
+            throw new DatosInvalidosException("La fecha de nacimiento es inválida.");
+        }
+
+        this.dni = dni;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    // ============================
+    // MÉTODO ABSTRACTO (polimorfismo)
+    // ============================
+    /**
+     * Cada subclase debe especificar su rol dentro del festival.
+     * Permite identificar el tipo de persona en mensajes y reportes.
+     */
+    public abstract String getRol();
+
+    // ============================
+    // MÉTODOS CONCRETOS
+    // ============================
+    /**
+     * Calcula la edad actual de la persona en base a su fecha de nacimiento.
+     */
+    public int getEdad() {
+        return Period.between(fechaNacimiento, LocalDate.now()).getYears();
+    }
+
+    /**
+     * Devuelve el nombre completo (nombre + apellido).
+     */
+    public String getNombreCompleto() {
+        return nombre + " " + apellido;
+    }
+
+    // ============================
+    // GETTERS Y SETTERS
+    // ============================
+    public String getDni() { return dni; }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) {
+        if (nombre == null || nombre.isBlank()) {
+            throw new DatosInvalidosException("El nombre no puede estar vacío.");
+        }
+        this.nombre = nombre;
+    }
+
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) {
+        if (apellido == null || apellido.isBlank()) {
+            throw new DatosInvalidosException("El apellido no puede estar vacío.");
+        }
+        this.apellido = apellido;
+    }
+
+    public LocalDate getFechaNacimiento() { return fechaNacimiento; }
+
+    // ============================
+    // EQUALS, HASHCODE Y TOSTRING
+    // ============================
+    /**
+     * Dos personas se consideran iguales si tienen el mismo DNI.
+     * Esto permite usarlas correctamente en colecciones (Set, Map).
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Persona)) return false;
+        Persona otra = (Persona) obj;
+        return this.dni.equals(otra.dni);
+    }
+
+    @Override
+    public int hashCode() {
+        return dni.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%s] %s %s (DNI: %s)", getRol(), nombre, apellido, dni);
+    }
+}
+
+
+// ====================================================================================
+Director
+// ====================================================================================
+
+package ar.edu.festivalcine.modelo.persona;
+
+import java.time.LocalDate;
+
+/**
+ * Representa al director de una o más películas del festival.
+ * Hereda los atributos comunes de Persona.
+ */
+public class Director extends Persona {
+
+    // ============================
+    // ATRIBUTOS PROPIOS
+    // ============================
+    private String nacionalidad;
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public Director(String dni, String nombre, String apellido,
+                    LocalDate fechaNacimiento, String nacionalidad) {
+        super(dni, nombre, apellido, fechaNacimiento);
+        this.nacionalidad = nacionalidad;
+    }
+
+    // ============================
+    // IMPLEMENTACIÓN DE MÉTODO ABSTRACTO
+    // ============================
+    @Override
+    public String getRol() {
+        return "Director";
+    }
+
+    // ============================
+    // GETTERS Y SETTERS
+    // ============================
+    public String getNacionalidad() { return nacionalidad; }
+    public void setNacionalidad(String nacionalidad) { this.nacionalidad = nacionalidad; }
+}
+
+
+// ====================================================================================
+ACTOR
+// ====================================================================================
+package ar.edu.festivalcine.modelo.persona;
+
+import java.time.LocalDate;
+
+/**
+ * Representa a un actor o actriz que participa en una o más películas del festival.
+ */
+public class Actor extends Persona {
+
+    // ============================
+    // ATRIBUTOS PROPIOS
+    // ============================
+    private String nacionalidad;
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public Actor(String dni, String nombre, String apellido,
+                 LocalDate fechaNacimiento, String nacionalidad) {
+        super(dni, nombre, apellido, fechaNacimiento);
+        this.nacionalidad = nacionalidad;
+    }
+
+    // ============================
+    // IMPLEMENTACIÓN DE MÉTODO ABSTRACTO
+    // ============================
+    @Override
+    public String getRol() {
+        return "Actor";
+    }
+
+    // ============================
+    // GETTERS Y SETTERS
+    // ============================
+    public String getNacionalidad() { return nacionalidad; }
+    public void setNacionalidad(String nacionalidad) { this.nacionalidad = nacionalidad; }
+}
+
+// ====================================================================================
+MIEMBROJURADO
+// ====================================================================================
+package ar.edu.festivalcine.modelo.persona;
+
+import java.time.LocalDate;
+
+/**
+ * Representa a un miembro del jurado del festival,
+ * encargado de evaluar las películas y otorgar puntajes.
+ */
+public class MiembroJurado extends Persona {
+
+    // ============================
+    // ATRIBUTOS PROPIOS
+    // ============================
+    private String especialidad;  // ej: "Crítico de cine", "Director", "Productor"
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public MiembroJurado(String dni, String nombre, String apellido,
+                         LocalDate fechaNacimiento, String especialidad) {
+        super(dni, nombre, apellido, fechaNacimiento);
+        this.especialidad = especialidad;
+    }
+
+    // ============================
+    // IMPLEMENTACIÓN DE MÉTODO ABSTRACTO
+    // ============================
+    @Override
+    public String getRol() {
+        return "Miembro del Jurado";
+    }
+
+    // ============================
+    // GETTERS Y SETTERS
+    // ============================
+    public String getEspecialidad() { return especialidad; }
+    public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
+}
+
+
+// ====================================================================================
+EMPLEADO (empleado/Empleado.java (clase abstracta))
+// ====================================================================================
+package ar.edu.festivalcine.modelo.persona.empleado;
+
+import ar.edu.festivalcine.excepciones.DatosInvalidosException;
+import ar.edu.festivalcine.modelo.persona.Persona;
+import java.time.LocalDate;
+
+/**
+ * Clase abstracta que representa a un empleado del festival.
+ * Hereda de Persona y agrega atributos laborales comunes a todos los empleados.
+ *
+ * No se instancia directamente; se debe usar Acomodador u Organizador.
+ */
+public abstract class Empleado extends Persona {
+
+    // ============================
+    // ATRIBUTOS PROPIOS
+    // ============================
+    protected String legajo;
+    protected double salario;
+    protected LocalDate fechaContratacion;
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public Empleado(String dni, String nombre, String apellido, LocalDate fechaNacimiento,
+                    String legajo, double salario, LocalDate fechaContratacion) {
+        super(dni, nombre, apellido, fechaNacimiento);
+
+        if (legajo == null || legajo.isBlank()) {
+            throw new DatosInvalidosException("El legajo no puede estar vacío.");
+        }
+        if (salario < 0) {
+            throw new DatosInvalidosException("El salario no puede ser negativo.");
+        }
+        if (fechaContratacion == null || fechaContratacion.isAfter(LocalDate.now())) {
+            throw new DatosInvalidosException("La fecha de contratación es inválida.");
+        }
+
+        this.legajo = legajo;
+        this.salario = salario;
+        this.fechaContratacion = fechaContratacion;
+    }
+
+    // ============================
+    // GETTERS Y SETTERS
+    // ============================
+    public String getLegajo() { return legajo; }
+
+    public double getSalario() { return salario; }
+    public void setSalario(double salario) {
+        if (salario < 0) {
+            throw new DatosInvalidosException("El salario no puede ser negativo.");
+        }
+        this.salario = salario;
+    }
+
+    public LocalDate getFechaContratacion() { return fechaContratacion; }
+}
+
+
+// ====================================================================================
+empleado/Acomodador.java
+// ====================================================================================
+package ar.edu.festivalcine.modelo.persona.empleado;
+
+import java.time.LocalDate;
+
+/**
+ * Representa a un acomodador del festival, encargado de validar entradas
+ * en puerta y ubicar a los espectadores en sus butacas.
+ */
+public class Acomodador extends Empleado {
+
+    // ============================
+    // ATRIBUTOS PROPIOS
+    // ============================
+    private String turno;  // ej: "Mañana", "Tarde", "Noche"
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public Acomodador(String dni, String nombre, String apellido, LocalDate fechaNacimiento,
+                      String legajo, double salario, LocalDate fechaContratacion, String turno) {
+        super(dni, nombre, apellido, fechaNacimiento, legajo, salario, fechaContratacion);
+        this.turno = turno;
+    }
+
+    // ============================
+    // IMPLEMENTACIÓN DE MÉTODO ABSTRACTO
+    // ============================
+    @Override
+    public String getRol() {
+        return "Acomodador";
+    }
+
+    // ============================
+    // GETTERS Y SETTERS
+    // ============================
+    public String getTurno() { return turno; }
+    public void setTurno(String turno) { this.turno = turno; }
+}
+
+
+// ====================================================================================
+empleado/Acomodador.java
+// ====================================================================================
+
+package ar.edu.festivalcine.modelo.persona.empleado;
+
+import java.time.LocalDate;
+
+/**
+ * Representa a un organizador del festival, encargado de gestionar la edición:
+ * programar funciones, registrar películas, contratar empleados, asignar jurados,
+ * coordinar sponsors y otorgar premios.
+ */
+public class Organizador extends Empleado {
+
+    // ============================
+    // ATRIBUTOS PROPIOS
+    // ============================
+    private String area;  // ej: "Programación", "Logística", "Comunicación"
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public Organizador(String dni, String nombre, String apellido, LocalDate fechaNacimiento,
+                       String legajo, double salario, LocalDate fechaContratacion, String area) {
+        super(dni, nombre, apellido, fechaNacimiento, legajo, salario, fechaContratacion);
+        this.area = area;
+    }
+
+    // ============================
+    // IMPLEMENTACIÓN DE MÉTODO ABSTRACTO
+    // ============================
+    @Override
+    public String getRol() {
+        return "Organizador";
+    }
+
+    // ============================
+    // GETTERS Y SETTERS
+    // ============================
+    public String getArea() { return area; }
+    public void setArea(String area) { this.area = area; }
+}
