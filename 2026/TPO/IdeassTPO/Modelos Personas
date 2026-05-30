@@ -258,6 +258,85 @@ public class MiembroJurado extends Persona {
     public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
 }
 
+// ====================================================================================
+ESPECTADOR
+// ====================================================================================
+
+package ar.edu.festivalcine.modelo.persona;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Representa a un espectador que asiste al festival y compra entradas.
+ * En etapas posteriores tendrá una lista de entradas compradas asociadas.
+ */
+public class Espectador extends Persona {
+
+    // ============================
+    // ATRIBUTOS PROPIOS
+    // ============================
+    private String email;
+    private String telefono;
+    private List<Entrada> entradasCompradas;
+
+    // NOTA: La lista de entradas compradas se agregará cuando definamos la clase Entrada.
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public Espectador(String dni, String nombre, String apellido,
+                      LocalDate fechaNacimiento, String email, String telefono) {
+        super(dni, nombre, apellido, fechaNacimiento);
+        this.email = email;
+        this.telefono = telefono;
+        this.entradasCompradas = new ArrayList<>();
+    }
+
+    // ============================
+    // IMPLEMENTACIÓN DE MÉTODO ABSTRACTO
+    // ============================
+    @Override
+    public String getRol() {
+        return "Espectador";
+    }
+
+    // ============================
+    // GETTERS Y SETTERS
+    // ============================
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    /**
+ * Agrega una entrada a la lista de entradas compradas por el espectador.
+ */
+public void agregarEntrada(Entrada entrada) {
+    if (entrada == null) {
+        throw new DatosInvalidosException("La entrada no puede ser nula.");
+    }
+    if (!entradasCompradas.contains(entrada)) {
+        entradasCompradas.add(entrada);
+    }
+}
+
+/**
+ * Quita una entrada de la lista (en caso de cancelación).
+ */
+public void quitarEntrada(Entrada entrada) {
+    entradasCompradas.remove(entrada);
+}
+
+/**
+ * Devuelve una copia de la lista de entradas compradas.
+ */
+public List<Entrada> getEntradasCompradas() {
+    return new ArrayList<>(entradasCompradas);
+
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
+}
+
 
 // ====================================================================================
 EMPLEADO (empleado/Empleado.java (clase abstracta))
@@ -366,7 +445,7 @@ public class Acomodador extends Empleado {
 
 
 // ====================================================================================
-empleado/Acomodador.java
+empleado/Organizador.java
 // ====================================================================================
 
 package ar.edu.festivalcine.modelo.persona.empleado;
