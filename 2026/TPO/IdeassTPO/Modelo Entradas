@@ -1,0 +1,325 @@
+package ar.edu.festivalcine.modelo.entrada;
+
+import ar.edu.festivalcine.excepciones.DatosInvalidosException;
+import ar.edu.festivalcine.excepciones.EntradaInvalidaException;
+import ar.edu.festivalcine.modelo.persona.Espectador;
+import ar.edu.festivalcine.modelo.sala.Butaca;
+import ar.edu.festivalcine.modelo.sala.Funcion;
+
+import java.time.LocalDateTime;
+
+/**
+ * Clase abstracta que representa una entrada genérica del festival.
+ * Define el contrato común de todas las entradas (atributos y métodos compartidos)
+ * y obliga a las subclases a implementar generarComprobante() y validar().
+ *
+ * Las subclases concretas son EntradaQR y EntradaFisica, lo que aprovecha
+ * el polimorfismo para que Funcion.venderEntrada() pueda crear el tipo
+ * adecuado en tiempo de ejecución.
+ */
+public abstract class Entrada {
+
+    // ============================
+    // ATRIBUTOS COMUNES
+    // ============================
+    protected String codigo;
+    protected LocalDateTime fechaCompra;
+    protected double precio;
+    protected boolean usada;          // se marca true cuando se valida en puerta
+
+    // Relaciones
+    protected Espectador espectador;
+    protected Funcion funcion;
+    protected Butaca butaca;
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public Entrada(String codigo, double precio,
+                   Espectador espectador, Funcion funcion, Butaca butaca) {
+        if (codigo == null || codigo.isBlank()) {
+            throw new DatosInvalidosException("El código de la entrada no puede estar vacío.");
+        }
+        if (precio < 0) {
+            throw new DatosInvalidosException("El precio de la entrada no puede ser negativo.");
+        }
+        if (espectador == null) {
+            throw new DatosInvalidosException("La entrada debe tener un espectador asociado.");
+        }
+        if (funcion == null) {
+            throw new DatosInvalidosException("La entrada debe estar asociada a una función.");
+        }
+        if (butaca == null) {
+            throw new DatosInvalidosException("La entrada debe tener una butaca asignada.");
+        }
+
+        this.codigo = codigo;
+        this.precio = precio;
+        this.espectador = espectador;
+        this.funcion = funcion;
+        this.butaca = butaca;
+        this.fechaCompra = LocalDateTime.now();
+        this.usada = false;
+    }
+
+    // ============================
+    // MÉTODOS ABSTRACTOS (POLIMORFISMO)
+    // ============================
+    /**
+     * Genera el comprobante de la entrada en el formato propio de cada subclase.
+     * - EntradaQR: genera un código QR con URL de validación.
+     * - EntradaFisica: genera un ticket impreso con número de serie.
+     */
+    public abstract String generarComprobante();
+
+    /**
+     * Valida la entrada al ingresar a la función.
+     * Cada subclase implementa su propio mecanismo de validación.
+     * Marca la entrada como "usada" si la validación es exitosa.
+     */
+    public abstract void validar();
+
+    // ============================
+    // MÉTODOS CONCRETOS COMPARTIDOS
+    // ============================
+    /**
+     * Marca la entrada como usada. Lanza excepción si ya fue utilizada antes.
+     * Este método es llamado por las subclases dentro de su validar().
+     */
+    protected void marcarComoUsada() {
+        if (this.usada) {
+            throw new EntradaInvalidaException(
+                    "La entrada " + codigo + " ya fue utilizada anteriormente.");
+        }
+        this.usada = true;
+    }
+
+    /**
+     * Indica si la entrada corresponde a una función futura
+     * (sirve para saber si todavía se puede usar o cancelar).
+     */
+    public boolean esVigente() {
+        return funcion.getFechaHora().isAfter(LocalDateTime.now());
+    }
+
+    // ============================
+    // GETTERS
+    // ============================
+    public String getCodigo() { return codigo; }
+    public LocalDateTime getFechaCompra() { return fechaCompra; }
+    public double getPrecio() { return precio; }
+    public boolean isUsada() { return usada; }
+    public Espectador getEspectador() { return espectador; }
+    public Funcion getFuncion() { return funcion; }
+    public Butaca getButaca() { return butaca; }
+
+    // ============================
+    // EQUALS, HASHCODE Y TOSTRING
+    // ============================
+    /**
+     * Dos entradas son iguales si tienen el mismo código.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Entrada)) return false;
+        Entrada otra = (Entrada) obj;
+        return this.codigo.equals(otra.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return codigo.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Entrada [%s] - %s - Butaca %s - $%.2f %s",
+                codigo, funcion.getPelicula().getTitulo(), butaca.getCodigo(),
+                precio, usada ? "(USADA)" : "");
+    }
+}
+
+
+
+
+
+
+//===========================================================================
+QR
+
+
+package ar.edu.festivalcine.modelo.entrada;
+
+import ar.edu.festivalcine.excepciones.EntradaInvalidaException;
+import ar.edu.festivalcine.modelo.persona.Espectador;
+import ar.edu.festivalcine.modelo.sala.Butaca;
+import ar.edu.festivalcine.modelo.sala.Funcion;
+
+import java.time.LocalDateTime;
+
+/**
+ * Entrada digital con código QR.
+ * Se valida mediante el escaneo del QR en puerta y registra la fecha y hora
+ * exactas del escaneo para fines de auditoría.
+ */
+public class EntradaQR extends Entrada {
+
+    // ============================
+    // ATRIBUTOS PROPIOS
+    // ============================
+    private String urlValidacion;     // URL única para escanear el QR
+    private LocalDateTime fechaEscaneo;
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public EntradaQR(String codigo, double precio,
+                     Espectador espectador, Funcion funcion, Butaca butaca,
+                     String urlValidacion) {
+        super(codigo, precio, espectador, funcion, butaca);
+        this.urlValidacion = urlValidacion;
+        this.fechaEscaneo = null;  // se setea al validar
+    }
+
+    // ============================
+    // IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS
+    // ============================
+    /**
+     * Genera el comprobante en formato digital con el QR embebido.
+     */
+    @Override
+    public String generarComprobante() {
+        return String.format(
+                "===== ENTRADA DIGITAL =====%n" +
+                "Código QR: %s%n" +
+                "Película: %s%n" +
+                "Sala: %s%n" +
+                "Fecha: %s%n" +
+                "Butaca: %s%n" +
+                "URL Validación: %s%n" +
+                "Precio: $%.2f%n" +
+                "===========================",
+                codigo,
+                funcion.getPelicula().getTitulo(),
+                funcion.getSala().getNombre(),
+                funcion.getFechaHora(),
+                butaca.getCodigo(),
+                urlValidacion,
+                precio);
+    }
+
+    /**
+     * Valida la entrada escaneando el QR.
+     * Marca la entrada como usada y registra la fecha de escaneo.
+     */
+    @Override
+    public void validar() {
+        if (!esVigente()) {
+            throw new EntradaInvalidaException(
+                    "La entrada QR " + codigo + " corresponde a una función ya pasada.");
+        }
+        marcarComoUsada();
+        this.fechaEscaneo = LocalDateTime.now();
+    }
+
+    // ============================
+    // GETTERS
+    // ============================
+    public String getUrlValidacion() { return urlValidacion; }
+    public LocalDateTime getFechaEscaneo() { return fechaEscaneo; }
+}
+
+//===============================================================================================
+
+FISICA
+
+package ar.edu.festivalcine.modelo.entrada;
+
+import ar.edu.festivalcine.excepciones.DatosInvalidosException;
+import ar.edu.festivalcine.excepciones.EntradaInvalidaException;
+import ar.edu.festivalcine.modelo.persona.Espectador;
+import ar.edu.festivalcine.modelo.sala.Butaca;
+import ar.edu.festivalcine.modelo.sala.Funcion;
+
+/**
+ * Entrada física impresa.
+ * Se identifica por un número de serie único y un color que indica
+ * el tipo de función (ej: "azul" para estreno, "rojo" para gala).
+ * Se valida mediante el control manual del acomodador en puerta.
+ */
+public class EntradaFisica extends Entrada {
+
+    // ============================
+    // ATRIBUTOS PROPIOS
+    // ============================
+    private String numeroSerie;
+    private String colorTicket;       // ej: "Azul", "Rojo", "Dorado"
+
+    // ============================
+    // CONSTRUCTOR
+    // ============================
+    public EntradaFisica(String codigo, double precio,
+                         Espectador espectador, Funcion funcion, Butaca butaca,
+                         String numeroSerie, String colorTicket) {
+        super(codigo, precio, espectador, funcion, butaca);
+
+        if (numeroSerie == null || numeroSerie.isBlank()) {
+            throw new DatosInvalidosException("El número de serie no puede estar vacío.");
+        }
+
+        this.numeroSerie = numeroSerie;
+        this.colorTicket = colorTicket;
+    }
+
+    // ============================
+    // IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS
+    // ============================
+    /**
+     * Genera el comprobante en formato de ticket impreso.
+     */
+    @Override
+    public String generarComprobante() {
+        return String.format(
+                "===== TICKET FÍSICO =====%n" +
+                "Código: %s%n" +
+                "N° Serie: %s%n" +
+                "Color: %s%n" +
+                "Película: %s%n" +
+                "Sala: %s%n" +
+                "Fecha: %s%n" +
+                "Butaca: %s%n" +
+                "Precio: $%.2f%n" +
+                "=========================",
+                codigo,
+                numeroSerie,
+                colorTicket,
+                funcion.getPelicula().getTitulo(),
+                funcion.getSala().getNombre(),
+                funcion.getFechaHora(),
+                butaca.getCodigo(),
+                precio);
+    }
+
+    /**
+     * Valida la entrada mediante el control manual del acomodador.
+     * Marca la entrada como usada.
+     */
+    @Override
+    public void validar() {
+        if (!esVigente()) {
+            throw new EntradaInvalidaException(
+                    "La entrada física " + codigo + " corresponde a una función ya pasada.");
+        }
+        marcarComoUsada();
+    }
+
+    // ============================
+    // GETTERS
+    // ============================
+    public String getNumeroSerie() { return numeroSerie; }
+    public String getColorTicket() { return colorTicket; }
+}
+
+
+
