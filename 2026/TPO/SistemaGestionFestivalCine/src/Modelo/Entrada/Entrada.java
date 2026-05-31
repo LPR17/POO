@@ -43,5 +43,21 @@ public abstract class Entrada {
         this.validada = false;
     }
 
+    //Metodos abstractos
+    /*
+    * Genera el comprobante de la entrada en el formato propio de cada subclase.
+    * - EntradaQR: genera un código QR con URL de validación.
+    * - EntradaFisica: genera un ticket impreso con número de serie.
+    */
+    public abstract String generarComprobante();
+
+    /*
+    * Valida la entrada al ingresar a la función.
+    * Cada subclase implementa su propio mecanismo de validación.
+    * Marca la entrada como "usada" si la validación es exitosa.
+    */
+    public abstract void validar();
+
+
 
 }
